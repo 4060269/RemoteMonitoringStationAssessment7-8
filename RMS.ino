@@ -1,22 +1,19 @@
 #include "sensitiveInformation.h"
-
 #define FORMAT_SPIFFS_IF_FAILED true
-
 #include <Wire.h>
 
-// Wifi & Webserver
+// Wifi & Webserver START
 #include "WiFi.h"
 #include "SPIFFS.h"
 #include <AsyncTCP.h>
 #include <ESPAsyncWebServer.h>
-
 AsyncWebServer server(80);
+// Wifi & Webserver END
 
-
-// RTC Start - Remove if unnecessary
+// RTC START
 #include "RTClib.h"
 RTC_PCF8523 rtc;
-// RTC End
+// RTC END
 
 // Temperature START
 #include "Adafruit_ADT7410.h"
@@ -29,6 +26,13 @@ Adafruit_ADT7410 tempsensor = Adafruit_ADT7410();
 Adafruit_MotorShield AFMS = Adafruit_MotorShield();
 Adafruit_DCMotor *myMotor = AFMS.getMotor(4);
 // MotorShield END
+
+// ESP32Servo Start
+#include <ESP32Servo.h>
+Servo myservo;  // create servo object to control a servo
+int servoPin = 12;
+boolean blindsOpen = false;
+// ESP32Servo End
 
 // MiniTFT Start
 #include <Adafruit_GFX.h>    // Core graphics library
@@ -60,20 +64,17 @@ void setup() {
     return;
   }
   if (!ss.begin()) {
-    Serial.println("seesaw init error!");
+    Serial.println("Seesaw init error!");
     while (1);
   }
-  else Serial.println("seesaw started");
+  else Serial.println("Seesaw started");
 
   ss.tftReset();
   ss.setBacklight(0x0); //set the backlight fully on
-
   // Use this initializer (uncomment) if you're using a 0.96" 180x60 TFT
   tft.initR(INITR_MINI160x80);   // initialize a ST7735S chip, mini display
-
   tft.setRotation(1);
   tft.fillScreen(ST77XX_BLACK);
-
 
   Serial.println("ADT7410 demo");
 
@@ -87,6 +88,14 @@ void setup() {
   // sensor takes 250 ms to get first readings
   delay(250);
 
+  // ESP32Servo Start
+  ESP32PWM::allocateTimer(0);
+  ESP32PWM::allocateTimer(1);
+  ESP32PWM::allocateTimer(2);
+  ESP32PWM::allocateTimer(3);
+  myservo.setPeriodHertz(50);    // standard 50 hz servo
+  myservo.attach(servoPin, 1000, 2000); // attaches the servo on pin 18 to the servo object
+  // ESP32Servo End
 
   // Wifi Configuration
   WiFi.begin(ssid, password);
@@ -141,10 +150,10 @@ void setup() {
 }
 
 void loop() {
-
   builtinLED();
   updateTemperature();
-  automaticFan(50.0);
+  automaticFan(20.3);
+  windowBlinds();
   delay(LOOPDELAY); // To allow time to publish new code.
 }
 
@@ -193,20 +202,32 @@ void tftDrawText(String text, uint16_t color) {
 void updateTemperature() {
   // Read and print out the temperature, then convert to *F
   float c = tempsensor.readTempC();
-  float f = c * 9.0 / 5.0 + 32;
   Serial.print("Temp: "); Serial.print(c); Serial.print("*C\t");
-  Serial.print(f); Serial.println("*F");
   String tempInC = String(c);
   tftDrawText(tempInC, ST77XX_WHITE);
   delay(100);
 }
 
 void automaticFan(float temperatureThreshold) {
-  myMotor->setSpeed(100);
   float c = tempsensor.readTempC();
+  myMotor->setSpeed(100);
   if (c < temperatureThreshold) {
     myMotor->run(RELEASE);
+    Serial.println("stop");
   } else {
     myMotor->run(FORWARD);
+    Serial.println("forward");
+  }
+}
+
+void windowBlinds() {
+  uint32_t buttons = ss.readButtons();
+  if (! (buttons % TFTWING_BUTTON_A)) {
+    if (blindsOpen) {
+      myservo.write(0);
+    } else {
+      myservo.write(180);
+    }
+    blindsOpen = !blindsOpen;
   }
 }

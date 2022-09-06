@@ -158,6 +158,26 @@ void loop() {
   delay(LOOPDELAY);     // To allow time to publish new code.
 }
 
+void logEvent(String dataToLog) {
+  // Log entries to a file stored in SPIFFS partition on the ESP32.
+  // Get the updated/current time
+  DateTime rightNow = rtc.now();
+  char csvReadableDate[25];
+  sprintf(csvReadableDate, "%02d,%02d,%02d,%02d,%02d,%02d,",  rightNow.year(), rightNow.month(), rightNow.day(), rightNow.hour(), rightNow.minute(), rightNow.second());
+
+  String logTemp = csvReadableDate + dataToLog + "\n"; // Add the data to log onto the end of the date/time
+
+  const char * logEntry = logTemp.c_str(); // convert the logtemp to a char * variable
+
+  // Add the log entry to the end of logevents.csv
+  appendFile(SPIFFS, "/logEvents.csv", logEntry);
+
+  // Output the logEvents - FOR DEBUG ONLY. Comment out to avoid spamming the serial monitor.
+  // readFile(SPIFFS, "/logEvents.csv");
+
+  Serial.print("\nEvent Logged: ");
+  Serial.println(logEntry);
+}
 
 void builtinLED() {
   if (LEDOn) {
@@ -166,30 +186,6 @@ void builtinLED() {
     digitalWrite(LED_BUILTIN, LOW);
   }
 }
-
-void logEvent(String dataToLog) {
-  /*
-     Log entries to a file stored in SPIFFS partition on the ESP32.
-  */
-  // Get the updated/current time
-  DateTime rightNow = rtc.now();
-  char csvReadableDate[25];
-  sprintf(csvReadableDate, "%02d,%02d,%02d,%02d,%02d,%02d,",  rightNow.year(), rightNow.month(), rightNow.day(), rightNow.hour(), rightNow.minute(), rightNow.second());
-
-  String logTemp = csvReadableDate + dataToLog + "\n"; // Add the data to log onto the end of the date/time
-
-  const char * logEntry = logTemp.c_str(); //convert the logtemp to a char * variable
-
-  //Add the log entry to the end of logevents.csv
-  appendFile(SPIFFS, "/logEvents.csv", logEntry);
-
-  // Output the logEvents - FOR DEBUG ONLY. Comment out to avoid spamming the serial monitor.
-  //  readFile(SPIFFS, "/logEvents.csv");
-
-  Serial.print("\nEvent Logged: ");
-  Serial.println(logEntry);
-}
-
 
 void tftDrawText(String text, uint16_t color) {
   tft.fillScreen(ST77XX_BLACK);

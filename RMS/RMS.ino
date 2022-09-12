@@ -1,3 +1,9 @@
+/* Completed Functionality
+ *  Fan, Blinds
+ * Need to complete
+ *  
+ */
+
 // Miscellaneous START
 #include "sensitiveInformation.h"
 #define FORMAT_SPIFFS_IF_FAILED true

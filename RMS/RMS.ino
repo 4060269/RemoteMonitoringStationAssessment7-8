@@ -26,18 +26,18 @@ boolean LEDOn = false; // Create and set variable state to false
 #include "SPIFFS.h"               // Provides library to allow software to access the flash on ESP32 using a simple file system 
 #include <AsyncTCP.h>             // A library to allow the ESP32 MCUs to create asynchronous and multiple TCP connections
 #include <ESPAsyncWebServer.h>    // A library to allow for the ESP32 to become a webserver using Async HTTP and WebSockets
-AsyncWebServer server(80);        // 
+AsyncWebServer server(80);        // ??? Ask ryan
 // WiFi & Webserver END
 
 // MiniTFT START
-#include <Adafruit_GFX.h>    // Core graphics library
-#include <Adafruit_ST7735.h> // Hardware-specific library for ST7735
-#include "Adafruit_miniTFTWing.h"
-Adafruit_miniTFTWing ss;
-#define TFT_RST    -1     // we use the seesaw for resetting to save a pin
-#define TFT_CS   14       // THIS IS DIFFERENT FROM THE DEFAULT CODE
-#define TFT_DC   32       // THIS IS DIFFERENT FROM THE DEFAULT CODE
-Adafruit_ST7735 tft = Adafruit_ST7735(TFT_CS,  TFT_DC, TFT_RST);
+#include <Adafruit_GFX.h>         // Core graphics library
+#include <Adafruit_ST7735.h>      // Hardware-specific library for ST7735
+#include "Adafruit_miniTFTWing.h" // Library to provide functionaity to seesaw converter framework
+Adafruit_miniTFTWing ss;          // ???
+#define TFT_RST  -1               // We use the seesaw for resetting to save a pin
+#define TFT_CS   14               // THIS IS DIFFERENT FROM THE DEFAULT CODE
+#define TFT_DC   32               // THIS IS DIFFERENT FROM THE DEFAULT CODE
+Adafruit_ST7735 tft = Adafruit_ST7735(TFT_CS,  TFT_DC, TFT_RST); // ???
 // MiniTFT END
 
 // Temperature START

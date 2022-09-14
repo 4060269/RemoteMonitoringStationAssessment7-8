@@ -96,9 +96,11 @@ void setup() {
   else Serial.println("Seesaw started");
   // Miscellaneous END
 
+
   // Built In LED START
   pinMode(LED_BUILTIN, OUTPUT);
   // Built In LED END
+
 
   // WiFi & Webserver START
   WiFi.begin(ssid, password);
@@ -114,6 +116,7 @@ void setup() {
   routesConfiguration(); // Reads routes from routesManagement
   server.begin();
   // WiFi & Webserver END
+
 
   // MiniTFT START
   ss.tftReset();
@@ -137,6 +140,7 @@ void setup() {
   tft.fillScreen(ST77XX_BLACK);
   // MiniTFT END
 
+
   // Temperature START
   if (!tempsensor.begin()) {
     Serial.println("Couldn't find ADT7410!");
@@ -144,6 +148,7 @@ void setup() {
   }
   delay(250); // temp sensor takes 250 ms to get first readings
   // Temperature END
+
 
   // RTC START
   if (! rtc.begin()) {
@@ -158,9 +163,11 @@ void setup() {
   rtc.start();
   // RTC END
 
+
   // MotorShield START
   AFMS.begin();
   // MotorShield END
+
 
   // Servo START
   ESP32PWM::allocateTimer(0);
@@ -170,6 +177,7 @@ void setup() {
   myservo.setPeriodHertz(50);    // standard 50 hz servo
   myservo.attach(servoPin, 1000, 2000); // attaches the servo on pin 18 to the servo object
   // Servo END
+
 
   // RFID Start
   SPI.begin(); // init SPI bus
@@ -188,6 +196,7 @@ void loop() {
   windowShutters();     // Running windowShutters function
   delay(LOOPDELAY);     // To allow time to publish new code.
 }
+
 
 void logEvent(String dataToLog) {
   // Log entries to a file stored in SPIFFS partition on the ESP32.
@@ -210,6 +219,7 @@ void logEvent(String dataToLog) {
   Serial.println(logEntry);
 }
 
+
 void builtinLED() {
   if (LEDOn) {
     digitalWrite(LED_BUILTIN, HIGH);
@@ -217,6 +227,7 @@ void builtinLED() {
     digitalWrite(LED_BUILTIN, LOW);
   }
 }
+
 
 void tftDrawText(String text, uint16_t color) {
   tft.fillScreen(ST77XX_BLACK);
@@ -227,12 +238,14 @@ void tftDrawText(String text, uint16_t color) {
   tft.print(text);
 }
 
+
 void printTemperature() {
   float c = tempsensor.readTempC();
   String tempInC = String(c);
   tftDrawText(tempInC, ST77XX_WHITE);
   delay(100);
 }
+
 
 void automaticFan(float temperatureThreshold) {
   float c = tempsensor.readTempC();
@@ -246,6 +259,7 @@ void automaticFan(float temperatureThreshold) {
   }
 }
 
+
 void windowShutters() {
   uint32_t buttons = ss.readButtons();
   if (! (buttons % TFTWING_BUTTON_A)) {
@@ -257,6 +271,7 @@ void windowShutters() {
     blindsOpen = !blindsOpen;
   }
 }
+
 
 void readRFID() {
   String uidOfCardRead = "";
@@ -284,6 +299,7 @@ void readRFID() {
     }
   }
 }
+
 
 void safeStatusDisplay() {
   /*

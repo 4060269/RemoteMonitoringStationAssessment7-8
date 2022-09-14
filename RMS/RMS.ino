@@ -1,13 +1,18 @@
-/* Completed Functionality
- *  Fan, Blinds
- * Need to complete
- *  
- */
+/*
+    Arduino-based Remote Monitoring System (RMS) Solution
+    for 'Project X' Canberra Floating Hotel.
+
+    Functionality:
+    Webserver via HUZZAH32 Feather Board
+    Real-time logging via Adalogger Featherwing
+    Automatic Fan Subsystem via ADXL343 + ADT7410 FeatherWing | DC Motor + Stepper FeatherWing
+    Window Blind Control Subsystem via Mini TFT with Joystick Featherwing | Micro Servo SG90
+    Safe Security Subsystem via RFID Reader MFRC522 | Red & Green LEDS
+*/
 
 // Miscellaneous START
-#include "sensitiveInformation.h"
-#define FORMAT_SPIFFS_IF_FAILED true
 #include <Wire.h>
+#define FORMAT_SPIFFS_IF_FAILED true
 #define LOOPDELAY 100
 // Miscellaneous END
 
@@ -16,6 +21,7 @@ boolean LEDOn = false; // State of Built-in LED true=on, false=off
 // Built In LED END
 
 // WiFi & Webserver START
+#include "sensitiveInformation.h"
 #include "WiFi.h"
 #include "SPIFFS.h"
 #include <AsyncTCP.h>
@@ -27,7 +33,6 @@ AsyncWebServer server(80);
 #include <Adafruit_GFX.h>    // Core graphics library
 #include <Adafruit_ST7735.h> // Hardware-specific library for ST7735
 #include "Adafruit_miniTFTWing.h"
-
 Adafruit_miniTFTWing ss;
 #define TFT_RST    -1     // we use the seesaw for resetting to save a pin
 #define TFT_CS   14       // THIS IS DIFFERENT FROM THE DEFAULT CODE
@@ -57,6 +62,17 @@ Servo myservo;  // create servo object to control a servo
 int servoPin = 12;
 boolean blindsOpen = false;
 // Servo END
+
+// RFID Start
+#define LEDRed 27
+#define LEDGreen 33
+#include <SPI.h>
+#include <MFRC522.h>
+#define SS_PIN  21  // ES32 Feather
+#define RST_PIN 17 // esp32 Feather - SCL pin. Could be others.
+MFRC522 rfid(SS_PIN, RST_PIN);
+bool safeLocked = true;
+// RFID End
 
 
 void setup() {
@@ -105,7 +121,7 @@ void setup() {
   tft.initR(INITR_MINI160x80);   // initialize a ST7735S chip, mini display
   tft.setRotation(1);
   tft.fillScreen(ST77XX_BLACK);
-    if (!ss.begin()) {
+  if (!ss.begin()) {
     logEvent("seesaw init error!");
     while (1);
   }
@@ -120,7 +136,7 @@ void setup() {
   tft.setRotation(1);
   tft.fillScreen(ST77XX_BLACK);
   // MiniTFT END
-  
+
   // Temperature START
   if (!tempsensor.begin()) {
     Serial.println("Couldn't find ADT7410!");
@@ -128,7 +144,7 @@ void setup() {
   }
   delay(250); // temp sensor takes 250 ms to get first readings
   // Temperature END
-  
+
   // RTC START
   if (! rtc.begin()) {
     Serial.println("Couldn't find RTC");
@@ -141,11 +157,11 @@ void setup() {
   }
   rtc.start();
   // RTC END
-  
+
   // MotorShield START
   AFMS.begin();
   // MotorShield END
-  
+
   // Servo START
   ESP32PWM::allocateTimer(0);
   ESP32PWM::allocateTimer(1);
@@ -154,6 +170,15 @@ void setup() {
   myservo.setPeriodHertz(50);    // standard 50 hz servo
   myservo.attach(servoPin, 1000, 2000); // attaches the servo on pin 18 to the servo object
   // Servo END
+
+  // RFID Start
+  SPI.begin(); // init SPI bus
+  rfid.PCD_Init(); // init MFRC522
+  pinMode(LEDRed, OUTPUT);
+  pinMode(LEDGreen, OUTPUT);
+  digitalWrite(LEDRed, LOW);
+  digitalWrite(LEDGreen, LOW);
+  // RFID End
 }
 
 void loop() {
@@ -230,5 +255,47 @@ void windowShutters() {
       myservo.write(180);
     }
     blindsOpen = !blindsOpen;
+  }
+}
+
+void readRFID() {
+  String uidOfCardRead = "";
+  String validCardUID = "00 232 81 25";
+
+  if (rfid.PICC_IsNewCardPresent()) { // new tag is available
+    if (rfid.PICC_ReadCardSerial()) { // NUID has been readed
+      MFRC522::PICC_Type piccType = rfid.PICC_GetType(rfid.uid.sak);
+      for (int i = 0; i < rfid.uid.size; i++) {
+        uidOfCardRead += rfid.uid.uidByte[i] < 0x10 ? " 0" : " ";
+        uidOfCardRead += rfid.uid.uidByte[i];
+      }
+      Serial.println(uidOfCardRead);
+
+      rfid.PICC_HaltA(); // halt PICC
+      rfid.PCD_StopCrypto1(); // stop encryption on PCD
+      uidOfCardRead.trim();
+      if (uidOfCardRead == validCardUID) {
+        safeLocked = false;
+        logEvent("Safe Unlocked");
+      } else {
+        safeLocked = true;
+        logEvent("Safe Locked");
+      }
+    }
+  }
+}
+
+void safeStatusDisplay() {
+  /*
+     Outputs the status of the Safe Lock to the LEDS
+     Red LED = Locked
+     Green LED = Unlocked.
+  */
+  if (safeLocked) {
+    digitalWrite(LEDRed, HIGH);
+    digitalWrite(LEDGreen, LOW);
+  } else {
+    digitalWrite(LEDRed, LOW);
+    digitalWrite(LEDGreen, HIGH);
   }
 }

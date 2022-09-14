@@ -11,19 +11,19 @@
 */
 
 // Miscellaneous START
-#include <Wire.h>
-#define FORMAT_SPIFFS_IF_FAILED true
-#define LOOPDELAY 100
+#include <Wire.h>                    // Providing library to allow communication to other modules via SDA and SCL
+#define FORMAT_SPIFFS_IF_FAILED true // Create variable and set to true
+#define LOOPDELAY 100                // Create variable and set to 100(ms)
 // Miscellaneous END
 
 // Built In LED START
-boolean LEDOn = false; // State of Built-in LED true=on, false=off
+boolean LEDOn = false; // Create and set variable state to false
 // Built In LED END
 
 // WiFi & Webserver START
-#include "sensitiveInformation.h"
-#include "WiFi.h"
-#include "SPIFFS.h"
+#include "sensitiveInformation.h" // Provide WiFi and Webserver with SSID, usernames and passwords 
+#include "WiFi.h"                 // Providing library to allow software to recognize and communicate with ESP32 WiFi on SoC
+#include "SPIFFS.h"               // 
 #include <AsyncTCP.h>
 #include <ESPAsyncWebServer.h>
 AsyncWebServer server(80);

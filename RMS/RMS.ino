@@ -23,10 +23,10 @@ boolean LEDOn = false; // Create and set variable state to false
 // WiFi & Webserver START
 #include "sensitiveInformation.h" // Provide WiFi and Webserver with SSID, usernames and passwords 
 #include "WiFi.h"                 // Providing library to allow software to recognize and communicate with ESP32 WiFi on SoC
-#include "SPIFFS.h"               // 
-#include <AsyncTCP.h>
-#include <ESPAsyncWebServer.h>
-AsyncWebServer server(80);
+#include "SPIFFS.h"               // Provides library to allow software to access the flash on ESP32 using a simple file system 
+#include <AsyncTCP.h>             // A library to allow the ESP32 MCUs to create asynchronous and multiple TCP connections
+#include <ESPAsyncWebServer.h>    // A library to allow for the ESP32 to become a webserver using Async HTTP and WebSockets
+AsyncWebServer server(80);        // 
 // WiFi & Webserver END
 
 // MiniTFT START

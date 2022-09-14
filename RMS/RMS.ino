@@ -30,175 +30,174 @@ AsyncWebServer server(80);        // ??? Ask ryan
 // WiFi & Webserver END
 
 // MiniTFT START
-#include <Adafruit_GFX.h>         // Core graphics library
-#include <Adafruit_ST7735.h>      // Hardware-specific library for ST7735
+#include <Adafruit_GFX.h>         // Core graphics library for Adafruit displays
+#include <Adafruit_ST7735.h>      // Hardware-specific library for ST7735 TFT 
 #include "Adafruit_miniTFTWing.h" // Library to provide functionaity to seesaw converter framework
 Adafruit_miniTFTWing ss;          // ???
 #define TFT_RST  -1               // We use the seesaw for resetting to save a pin
-#define TFT_CS   14               // THIS IS DIFFERENT FROM THE DEFAULT CODE
-#define TFT_DC   32               // THIS IS DIFFERENT FROM THE DEFAULT CODE
-Adafruit_ST7735 tft = Adafruit_ST7735(TFT_CS,  TFT_DC, TFT_RST); // ???
+#define TFT_CS   14               // Setting CS pin to 14
+#define TFT_DC   32               // Setting DC pin to 32
+Adafruit_ST7735 tft = Adafruit_ST7735(TFT_CS,  TFT_DC, TFT_RST); // Create TFT object and pass pin definitions as arguments
 // MiniTFT END
 
 // Temperature START
-#include "Adafruit_ADT7410.h"
-Adafruit_ADT7410 tempsensor = Adafruit_ADT7410(); // Create the ADT7410 temperature sensor object
+#include "Adafruit_ADT7410.h"                     // Library to allow temperature sensor to be found and read from software
+Adafruit_ADT7410 tempsensor = Adafruit_ADT7410(); // Create the ADT7410 temperature sensor object 
 // Temperature END
 
 // RTC START
-#include "RTClib.h"
-RTC_PCF8523 rtc;
+#include "RTClib.h" // Library for real-time clock to be read from through software
+RTC_PCF8523 rtc;    // ???
 // RTC END
 
 // MotorShield START
-#include <Adafruit_MotorShield.h>
-Adafruit_MotorShield AFMS = Adafruit_MotorShield();
-Adafruit_DCMotor *myMotor = AFMS.getMotor(4);
+#include <Adafruit_MotorShield.h>                   //
+Adafruit_MotorShield AFMS = Adafruit_MotorShield(); //
+Adafruit_DCMotor *myMotor = AFMS.getMotor(4);       //
 // MotorShield END
 
 // Servo START
-#include <ESP32Servo.h>
-Servo myservo;  // create servo object to control a servo
-int servoPin = 12;
-boolean blindsOpen = false;
+#include <ESP32Servo.h>     //
+Servo myservo;              // create servo object to control a servo
+int servoPin = 12;          //
+boolean blindsOpen = false; //
 // Servo END
 
 // RFID Start
-#define LEDRed 27
-#define LEDGreen 33
-#include <SPI.h>
-#include <MFRC522.h>
-#define SS_PIN  21  // ES32 Feather
-#define RST_PIN 17 // esp32 Feather - SCL pin. Could be others.
-MFRC522 rfid(SS_PIN, RST_PIN);
-bool safeLocked = true;
+#define LEDRed 27              //
+#define LEDGreen 33            //
+#include <SPI.h>               //
+#include <MFRC522.h>           //
+#define SS_PIN  21             // ES32 Feather
+#define RST_PIN 17             // esp32 Feather - SCL pin. Could be others.
+MFRC522 rfid(SS_PIN, RST_PIN); //
+bool safeLocked = true;        //
 // RFID End
 
 
 void setup() {
   // Miscellaneous START
-  Serial.begin(9600);
-  while (!Serial) {
-    delay(10);
+  Serial.begin(9600); //
+  while (!Serial) {   //
+    delay(10);        //
   }
-  delay(1000);
+  delay(1000);        //
 
-  if (!SPIFFS.begin(FORMAT_SPIFFS_IF_FAILED)) {
+  if (!SPIFFS.begin(FORMAT_SPIFFS_IF_FAILED)) { //
     // Follow instructions in README and install
-    // https://github.com/me-no-dev/arduino-esp32fs-plugin
-    Serial.println("SPIFFS Mount Failed");
+    // https://github.com/me-no-dev/arduino-esp32fs-plugin 
+    Serial.println("SPIFFS Mount Failed");      // 
     return;
   }
-  if (!ss.begin()) {
-    Serial.println("Seesaw init error!");
-    while (1);
+  if (!ss.begin()) {                      //
+    Serial.println("Seesaw init error!"); //
+    while (1);                            //
   }
-  else Serial.println("Seesaw started");
+  else Serial.println("Seesaw started");  //
   // Miscellaneous END
 
 
   // Built In LED START
-  pinMode(LED_BUILTIN, OUTPUT);
+  pinMode(LED_BUILTIN, OUTPUT); //
   // Built In LED END
 
 
   // WiFi & Webserver START
-  WiFi.begin(ssid, password);
-  while (WiFi.status() != WL_CONNECTED) {
-    delay(1000);
-    Serial.println("Connecting to WiFi..");
+  WiFi.begin(ssid, password);               //
+  while (WiFi.status() != WL_CONNECTED) {   //
+    delay(1000);                            //
+    Serial.println("Connecting to WiFi.."); //
   }
-  Serial.println();
-  Serial.print("Connected to the Internet");
-  Serial.print("IP address: ");
-  Serial.println(WiFi.localIP());
+  Serial.println();                          //
+  Serial.print("Connected to the Internet"); //
+  Serial.print("IP address: ");              //
+  Serial.println(WiFi.localIP());            //
 
   routesConfiguration(); // Reads routes from routesManagement
-  server.begin();
+  server.begin();        // 
   // WiFi & Webserver END
 
 
   // MiniTFT START
-  ss.tftReset();
-  ss.setBacklight(0x0); //set the backlight fully on
-  tft.initR(INITR_MINI160x80);   // initialize a ST7735S chip, mini display
-  tft.setRotation(1);
-  tft.fillScreen(ST77XX_BLACK);
-  if (!ss.begin()) {
-    logEvent("seesaw init error!");
-    while (1);
+  ss.tftReset();                    //
+  ss.setBacklight(0x0);             // set the backlight fully on
+  tft.initR(INITR_MINI160x80);      // initialize a ST7735S chip, mini display
+  tft.setRotation(1);               //
+  tft.fillScreen(ST77XX_BLACK);     //
+  if (!ss.begin()) {                //
+    logEvent("seesaw init error!"); //
+    while (1);                      //
   }
-  else logEvent("seesaw started");
+  else logEvent("seesaw started");  //
 
-  ss.tftReset();
-  ss.setBacklight(0x0); //set the backlight fully on
+  ss.tftReset();        //
+  ss.setBacklight(0x0); // set the backlight fully on
 
-  // Use this initializer (uncomment) if you're using a 0.96" 180x60 TFT
-  tft.initR(INITR_MINI160x80);   // initialize a ST7735S chip, mini display
+  tft.initR(INITR_MINI160x80); // initialize a ST7735S chip, mini display
 
-  tft.setRotation(1);
-  tft.fillScreen(ST77XX_BLACK);
+  tft.setRotation(1);           //
+  tft.fillScreen(ST77XX_BLACK); //
   // MiniTFT END
 
 
   // Temperature START
-  if (!tempsensor.begin()) {
-    Serial.println("Couldn't find ADT7410!");
-    while (1);
+  if (!tempsensor.begin()) {                  //
+    Serial.println("Couldn't find ADT7410!"); //
+    while (1);                                //
   }
-  delay(250); // temp sensor takes 250 ms to get first readings
+  delay(250);                                 // temp sensor takes 250 ms to get first readings
   // Temperature END
 
 
   // RTC START
-  if (! rtc.begin()) {
-    Serial.println("Couldn't find RTC");
-    Serial.flush();
-    //    abort();
+  if (! rtc.begin()) {                   //
+    Serial.println("Couldn't find RTC"); //
+    Serial.flush();                      //
+    // abort();
   }
-  if (! rtc.initialized() || rtc.lostPower()) {
-    logEvent("RTC is NOT initialized, let's set the time!");
-    rtc.adjust(DateTime(F(__DATE__), F(__TIME__)));
+  if (! rtc.initialized() || rtc.lostPower()) {              //
+    logEvent("RTC is NOT initialized, let's set the time!"); //
+    rtc.adjust(DateTime(F(__DATE__), F(__TIME__)));          //
   }
-  rtc.start();
+  rtc.start(); //                                         
   // RTC END
 
 
   // MotorShield START
-  AFMS.begin();
+  AFMS.begin(); //
   // MotorShield END
 
 
   // Servo START
-  ESP32PWM::allocateTimer(0);
-  ESP32PWM::allocateTimer(1);
-  ESP32PWM::allocateTimer(2);
-  ESP32PWM::allocateTimer(3);
-  myservo.setPeriodHertz(50);    // standard 50 hz servo
+  ESP32PWM::allocateTimer(0);           //
+  ESP32PWM::allocateTimer(1);           //
+  ESP32PWM::allocateTimer(2);           //
+  ESP32PWM::allocateTimer(3);           //
+  myservo.setPeriodHertz(50);           // standard 50 hz servo
   myservo.attach(servoPin, 1000, 2000); // attaches the servo on pin 18 to the servo object
   // Servo END
 
 
   // RFID Start
-  SPI.begin(); // init SPI bus
-  rfid.PCD_Init(); // init MFRC522
-  pinMode(LEDRed, OUTPUT);
-  pinMode(LEDGreen, OUTPUT);
-  digitalWrite(LEDRed, LOW);
-  digitalWrite(LEDGreen, LOW);
+  SPI.begin();                 // initialize SPI bus
+  rfid.PCD_Init();             // initialize MFRC522
+  pinMode(LEDRed, OUTPUT);     //
+  pinMode(LEDGreen, OUTPUT);   //
+  digitalWrite(LEDRed, LOW);   //
+  digitalWrite(LEDGreen, LOW); //
   // RFID End
 }
 
 void loop() {
-  builtinLED();         // Running builtinLED function
-  printTemperature();   // Running printTemperature function
-  automaticFan(20.3);   // Running automaticFan function; passing arguement, < 20.3 degrees will trigger the fan
-  windowShutters();     // Running windowShutters function
-  delay(LOOPDELAY);     // To allow time to publish new code.
+  builtinLED();       // Running builtinLED function
+  printTemperature(); // Running printTemperature function
+  automaticFan(20.3); // Running automaticFan function; passing arguement, < 20.3 degrees will trigger the fan
+  windowShutters();   // Running windowShutters function
+  delay(LOOPDELAY);   // To allow time to publish new code.
 }
 
 
-void logEvent(String dataToLog) {
+void logEvent(String dataToLog) { //
   // Log entries to a file stored in SPIFFS partition on the ESP32.
   // Get the updated/current time
   DateTime rightNow = rtc.now();
@@ -220,98 +219,98 @@ void logEvent(String dataToLog) {
 }
 
 
-void builtinLED() {
-  if (LEDOn) {
-    digitalWrite(LED_BUILTIN, HIGH);
-  } else {
-    digitalWrite(LED_BUILTIN, LOW);
+void builtinLED() { //
+  if (LEDOn) {                       //
+    digitalWrite(LED_BUILTIN, HIGH); //
+  } else {                           //
+    digitalWrite(LED_BUILTIN, LOW);  //
   }
 }
 
 
-void tftDrawText(String text, uint16_t color) {
-  tft.fillScreen(ST77XX_BLACK);
-  tft.setCursor(0, 0);
-  tft.setTextSize(3);
-  tft.setTextColor(color);
-  tft.setTextWrap(true);
-  tft.print(text);
+void tftDrawText(String text, uint16_t color) { //
+  tft.fillScreen(ST77XX_BLACK); //
+  tft.setCursor(0, 0);          //
+  tft.setTextSize(3);           //
+  tft.setTextColor(color);      //
+  tft.setTextWrap(true);        //
+  tft.print(text);              //
 }
 
 
-void printTemperature() {
-  float c = tempsensor.readTempC();
-  String tempInC = String(c);
-  tftDrawText(tempInC, ST77XX_WHITE);
-  delay(100);
+void printTemperature() {             //
+  float c = tempsensor.readTempC();   //
+  String tempInC = String(c);         //
+  tftDrawText(tempInC, ST77XX_WHITE); //
+  delay(100);                         //
 }
 
 
-void automaticFan(float temperatureThreshold) {
-  float c = tempsensor.readTempC();
-  myMotor->setSpeed(100);
-  if (c < temperatureThreshold) {
-    myMotor->run(RELEASE);
-    Serial.println("stop");
-  } else {
-    myMotor->run(FORWARD);
-    Serial.println("forward");
+void automaticFan(float temperatureThreshold) { //
+  float c = tempsensor.readTempC(); //
+  myMotor->setSpeed(100);           //
+  if (c < temperatureThreshold) {   //
+    myMotor->run(RELEASE);          //
+    Serial.println("stop");         //
+  } else {                          //
+    myMotor->run(FORWARD);          //
+    Serial.println("forward");      //
   }
 }
 
 
-void windowShutters() {
-  uint32_t buttons = ss.readButtons();
-  if (! (buttons % TFTWING_BUTTON_A)) {
-    if (blindsOpen) {
-      myservo.write(0);
-    } else {
-      myservo.write(180);
+void windowShutters() { //
+  uint32_t buttons = ss.readButtons();  //
+  if (! (buttons % TFTWING_BUTTON_A)) { //
+    if (blindsOpen) {                   //
+      myservo.write(0);                 //
+    } else {                            //
+      myservo.write(180);               //
     }
-    blindsOpen = !blindsOpen;
+    blindsOpen = !blindsOpen;           //
   }
 }
 
 
-void readRFID() {
-  String uidOfCardRead = "";
-  String validCardUID = "00 232 81 25";
+void readRFID() { //
+  String uidOfCardRead = "";            //
+  String validCardUID = "00 232 81 25"; //
 
-  if (rfid.PICC_IsNewCardPresent()) { // new tag is available
-    if (rfid.PICC_ReadCardSerial()) { // NUID has been readed
-      MFRC522::PICC_Type piccType = rfid.PICC_GetType(rfid.uid.sak);
-      for (int i = 0; i < rfid.uid.size; i++) {
-        uidOfCardRead += rfid.uid.uidByte[i] < 0x10 ? " 0" : " ";
-        uidOfCardRead += rfid.uid.uidByte[i];
+  if (rfid.PICC_IsNewCardPresent()) {                                // new tag is available
+    if (rfid.PICC_ReadCardSerial()) {                                // NUID has been read
+      MFRC522::PICC_Type piccType = rfid.PICC_GetType(rfid.uid.sak); //
+      for (int i = 0; i < rfid.uid.size; i++) {                      //
+        uidOfCardRead += rfid.uid.uidByte[i] < 0x10 ? " 0" : " ";    //
+        uidOfCardRead += rfid.uid.uidByte[i];                        //
       }
-      Serial.println(uidOfCardRead);
+      Serial.println(uidOfCardRead); //
 
-      rfid.PICC_HaltA(); // halt PICC
-      rfid.PCD_StopCrypto1(); // stop encryption on PCD
-      uidOfCardRead.trim();
-      if (uidOfCardRead == validCardUID) {
-        safeLocked = false;
-        logEvent("Safe Unlocked");
-      } else {
-        safeLocked = true;
-        logEvent("Safe Locked");
+      rfid.PICC_HaltA();                   // halt PICC
+      rfid.PCD_StopCrypto1();              // stop encryption on PCD
+      uidOfCardRead.trim();                //
+      if (uidOfCardRead == validCardUID) { //
+        safeLocked = false;                //
+        logEvent("Safe Unlocked");         //
+      } else {                          
+        safeLocked = true;                 //
+        logEvent("Safe Locked");           //
       }
     }
   }
 }
 
 
-void safeStatusDisplay() {
+void safeStatusDisplay() { //
   /*
      Outputs the status of the Safe Lock to the LEDS
      Red LED = Locked
      Green LED = Unlocked.
   */
-  if (safeLocked) {
-    digitalWrite(LEDRed, HIGH);
-    digitalWrite(LEDGreen, LOW);
+  if (safeLocked) { //
+    digitalWrite(LEDRed, HIGH);   //
+    digitalWrite(LEDGreen, LOW);  //
   } else {
-    digitalWrite(LEDRed, LOW);
-    digitalWrite(LEDGreen, HIGH);
+    digitalWrite(LEDRed, LOW);    //
+    digitalWrite(LEDGreen, HIGH); //
   }
 }

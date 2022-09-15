@@ -3,7 +3,7 @@
     for 'Project X' Canberra Floating Hotel.
 
     Functionality:
-    Webserver via HUZZAH32 Feather Board
+        Webserver via HUZZAH32 Feather Board
     Real-time logging via Adalogger Featherwing
     Automatic Fan Subsystem via ADXL343 + ADT7410 FeatherWing | DC Motor + Stepper FeatherWing
     Window Blind Control Subsystem via Mini TFT with Joystick Featherwing | Micro Servo SG90
@@ -42,7 +42,7 @@ Adafruit_ST7735 tft = Adafruit_ST7735(TFT_CS,  TFT_DC, TFT_RST); // Create TFT o
 
 // Temperature START
 #include "Adafruit_ADT7410.h"                     // Library to allow temperature sensor to be found and read from software
-Adafruit_ADT7410 tempsensor = Adafruit_ADT7410(); // Create the ADT7410 temperature sensor object 
+Adafruit_ADT7410 tempsensor = Adafruit_ADT7410(); // Create the ADT7410 temperature sensor object
 // Temperature END
 
 // RTC START
@@ -67,6 +67,7 @@ boolean blindsOpen = false; //
 #define LEDRed 27              //
 #define LEDGreen 33            //
 #include <SPI.h>               //
+
 #include <MFRC522.h>           //
 #define SS_PIN  21             // ES32 Feather
 #define RST_PIN 17             // esp32 Feather - SCL pin. Could be others.
@@ -85,8 +86,8 @@ void setup() {
 
   if (!SPIFFS.begin(FORMAT_SPIFFS_IF_FAILED)) { //
     // Follow instructions in README and install
-    // https://github.com/me-no-dev/arduino-esp32fs-plugin 
-    Serial.println("SPIFFS Mount Failed");      // 
+    // https://github.com/me-no-dev/arduino-esp32fs-plugin
+    Serial.println("SPIFFS Mount Failed");      //
     return;
   }
   if (!ss.begin()) {                      //
@@ -114,29 +115,24 @@ void setup() {
   Serial.println(WiFi.localIP());            //
 
   routesConfiguration(); // Reads routes from routesManagement
-  server.begin();        // 
+  server.begin();        //
   // WiFi & Webserver END
 
-
+  Serial.println("here");
   // MiniTFT START
-  ss.tftReset();                    //
-  ss.setBacklight(0x0);             // set the backlight fully on
-  tft.initR(INITR_MINI160x80);      // initialize a ST7735S chip, mini display
-  tft.setRotation(1);               //
-  tft.fillScreen(ST77XX_BLACK);     //
+
   if (!ss.begin()) {                //
     logEvent("seesaw init error!"); //
     while (1);                      //
   }
   else logEvent("seesaw started");  //
-
+  ss.tftReset();                    //
+  ss.setBacklight(0x0);             // set the backlight fully on
+  tft.initR(INITR_MINI160x80);      // initialize a ST7735S chip, mini display
+  tft.setRotation(1);               //
+  tft.fillScreen(ST77XX_BLACK);     //
   ss.tftReset();        //
   ss.setBacklight(0x0); // set the backlight fully on
-
-  tft.initR(INITR_MINI160x80); // initialize a ST7735S chip, mini display
-
-  tft.setRotation(1);           //
-  tft.fillScreen(ST77XX_BLACK); //
   // MiniTFT END
 
 
@@ -159,7 +155,7 @@ void setup() {
     logEvent("RTC is NOT initialized, let's set the time!"); //
     rtc.adjust(DateTime(F(__DATE__), F(__TIME__)));          //
   }
-  rtc.start(); //                                         
+  rtc.start(); //
   // RTC END
 
 
@@ -291,7 +287,7 @@ void readRFID() { //
       if (uidOfCardRead == validCardUID) { //
         safeLocked = false;                //
         logEvent("Safe Unlocked");         //
-      } else {                          
+      } else {
         safeLocked = true;                 //
         logEvent("Safe Locked");           //
       }

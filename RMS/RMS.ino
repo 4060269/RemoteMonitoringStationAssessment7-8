@@ -97,6 +97,16 @@ void setup() {
   else Serial.println("Seesaw started");  //
   // Miscellaneous END
 
+  // MiniTFT START
+  ss.tftReset();                    //
+  ss.setBacklight(0x0);             // set the backlight fully on
+  tft.initR(INITR_MINI160x80);      // initialize a ST7735S chip, mini display
+  tft.setRotation(1);               //
+  tft.fillScreen(ST77XX_BLACK);     //
+  ss.tftReset();        //
+  ss.setBacklight(0x0); // set the backlight fully on
+  // MiniTFT END
+
 
   // Built In LED START
   pinMode(LED_BUILTIN, OUTPUT); //
@@ -119,21 +129,7 @@ void setup() {
   // WiFi & Webserver END
 
   Serial.println("here");
-  // MiniTFT START
 
-  if (!ss.begin()) {                //
-    logEvent("seesaw init error!"); //
-    while (1);                      //
-  }
-  else logEvent("seesaw started");  //
-  ss.tftReset();                    //
-  ss.setBacklight(0x0);             // set the backlight fully on
-  tft.initR(INITR_MINI160x80);      // initialize a ST7735S chip, mini display
-  tft.setRotation(1);               //
-  tft.fillScreen(ST77XX_BLACK);     //
-  ss.tftReset();        //
-  ss.setBacklight(0x0); // set the backlight fully on
-  // MiniTFT END
 
 
   // Temperature START
@@ -187,8 +183,10 @@ void setup() {
 void loop() {
   builtinLED();       // Running builtinLED function
   printTemperature(); // Running printTemperature function
-  automaticFan(20.3); // Running automaticFan function; passing arguement, < 20.3 degrees will trigger the fan
+  automaticFan(18.3); // Running automaticFan function; passing arguement, < 20.3 degrees will trigger the fan
   windowShutters();   // Running windowShutters function
+  readRFID();
+  safeStatusDisplay();
   delay(LOOPDELAY);   // To allow time to publish new code.
 }
 
@@ -247,10 +245,10 @@ void automaticFan(float temperatureThreshold) { //
   myMotor->setSpeed(100);           //
   if (c < temperatureThreshold) {   //
     myMotor->run(RELEASE);          //
-    Serial.println("stop");         //
+    //Serial.println("stop");         //
   } else {                          //
     myMotor->run(FORWARD);          //
-    Serial.println("forward");      //
+    //Serial.println("forward");      //
   }
 }
 
@@ -258,7 +256,7 @@ void automaticFan(float temperatureThreshold) { //
 void windowShutters() { //
   uint32_t buttons = ss.readButtons();  //
   if (! (buttons % TFTWING_BUTTON_A)) { //
-    if (blindsOpen) {                   //
+    if (blindsOpen) {
       myservo.write(0);                 //
     } else {                            //
       myservo.write(180);               //
@@ -270,7 +268,7 @@ void windowShutters() { //
 
 void readRFID() { //
   String uidOfCardRead = "";            //
-  String validCardUID = "00 232 81 25"; //
+  String validCardUID = "60 135 43 73"; //
 
   if (rfid.PICC_IsNewCardPresent()) {                                // new tag is available
     if (rfid.PICC_ReadCardSerial()) {                                // NUID has been read

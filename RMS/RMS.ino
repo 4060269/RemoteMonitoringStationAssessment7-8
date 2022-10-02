@@ -29,14 +29,14 @@
 #include <Wire.h>                    
 // Providing library to allow communication to other modules via SDA and SCL
 #define FORMAT_SPIFFS_IF_FAILED true 
-// Create variable and set to true
+// Simplify true to natural language
 #define LOOPDELAY 100                
-// Create variable and set to 100(ms)
+// Simplify 100ms to natural language
 // Miscellaneous END
 
 // Built In LED START
 boolean LEDOn = false; 
-// Create and set variable state to false
+// Simplify false to natural language
 // Built In LED END
 
 // WiFi & Webserver START
@@ -47,30 +47,30 @@ boolean LEDOn = false;
 #include "SPIFFS.h"              
 // Provides library to allow software to access the flash on ESP32 using a simple file system 
 #include <AsyncTCP.h>            
-// A library to allow the ESP32 MCUs to create asynchronous and multiple TCP connections
+// Allows the ESP32 MCUs to create asynchronous and multiple TCP connections
 #include <ESPAsyncWebServer.h>   
-// A library to allow for the ESP32 to become a webserver using Async HTTP and WebSockets
+// Allows for the ESP32 to become a webserver using Async HTTP and WebSockets
 AsyncWebServer server(80);       
-// ??? Ask ryan
+// Starting the object to allow other code to run and putting on port 80 for simplistically
 // WiFi & Webserver END
 
 // MiniTFT START
 #include <Adafruit_GFX.h>         
-// Core graphics library for Adafruit displays
+// Core graphics library needed for all Adafruit displays
 #include <Adafruit_ST7735.h>     
 // Hardware-specific library for ST7735 TFT 
 #include "Adafruit_miniTFTWing.h" 
 // Library to provide functionaity to seesaw converter framework
 Adafruit_miniTFTWing ss;          
-// ???
+// Shorten object name to ss for simplistically
 #define TFT_RST  -1               
 // We use the seesaw for resetting to save a pin
 #define TFT_CS   14               
-// Setting CS pin to 14
+// Simplify pin 14 to TFT_CS 
 #define TFT_DC   32               
-// Setting DC pin to 32
+// Simplify pin 32 to TFT_DC 
 Adafruit_ST7735 tft = Adafruit_ST7735(TFT_CS,  TFT_DC, TFT_RST); 
-// Create TFT object and pass pin definitions as arguments
+// Create TFT object and pass pin definitions for functionality
 // MiniTFT END
 
 // Temperature START

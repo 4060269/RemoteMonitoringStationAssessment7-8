@@ -2,12 +2,27 @@
     Arduino-based Remote Monitoring System (RMS) Solution
     for 'Project X' Canberra Floating Hotel.
 
-    Functionality:
-        Webserver via HUZZAH32 Feather Board
-    Real-time logging via Adalogger Featherwing
-    Automatic Fan Subsystem via ADXL343 + ADT7410 FeatherWing | DC Motor + Stepper FeatherWing
-    Window Blind Control Subsystem via Mini TFT with Joystick Featherwing | Micro Servo SG90
+    Functionality:                                                                      
+    Webserver via HUZZAH32 Feather Board
+    - AsyncTCP & ESPAsyncWebServer
+    Real-time logging via Adalogger Featherwing 
+    - RTClib
+    Automatic Fan Subsystem via ADXL343 + ADT7410 FeatherWing | DC Motor + Stepper FeatherWing 
+    -  Adafruit ADT7410 Library & Adafruit Motor Shield V2 Library
+    Window Blind Control Subsystem via Mini TFT with Joystick Featherwing | Micro Servo SG90 
+    - Adafruit ST7735 and ST7789 Library & ESP32Servo
     Safe Security Subsystem via RFID Reader MFRC522 | Red & Green LEDS
+    - MFRC522
+
+    Libraries:
+    AsyncTCP (Latest as of 17/10/19) by me-no-dev
+    ESPAsyncWebServer (Latest as of 26/3/22) by me-no-dev 
+    RTClib (2.1.1) by Adafruit
+    Adafruit ADT7410 Library (1.2.0) by Adafruit
+    Adafruit Motor Shield V2 Library (1.1.0) by Adafruit
+    Adafruit ST7735 and ST7789 Library (1.9.3) by Adafruit
+    ESP32Servo (0.11.0) by Kevin Harrington
+    MFRC522 (1.4.10) by GithubCommunity
 */
 
 // Miscellaneous START

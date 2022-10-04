@@ -111,7 +111,6 @@ boolean blindsOpen = false;
 #define RST_PIN 17
 // Simplifying pin definitions
 MFRC522 rfid(SS_PIN, RST_PIN);
-//
 bool safeLocked = true;
 // RFID End
 
@@ -119,55 +118,40 @@ bool safeLocked = true;
 void setup() {
   // Miscellaneous START
   Serial.begin(9600);
-  //
+  // 9600 for consistency 
   while (!Serial) {
-    //
     delay(10);
-    //
+    // Keep waiting until serial connection is established 
   }
   delay(1000);
-  //
 
   if (!SPIFFS.begin(FORMAT_SPIFFS_IF_FAILED)) {
-    //
     // Follow instructions in README and install
     // https://github.com/me-no-dev/arduino-esp32fs-plugin
     Serial.println("SPIFFS Mount Failed");
-    //
     return;
   }
   if (!ss.begin()) {
-    //
     Serial.println("Seesaw init error!");
-    //
     while (1);
-    //
+    // Waiting for seesaw to start
   }
   else Serial.println("Seesaw started");
-  //
   // Miscellaneous END
 
   // MiniTFT START
   ss.tftReset();
-  //
   ss.setBacklight(0x0);
-  // set the backlight fully on
+  // reset and turn display on to clear all previous uses
   tft.initR(INITR_MINI160x80);
   // initialize a ST7735S chip, mini display
   tft.setRotation(1);
-  //
   tft.fillScreen(ST77XX_BLACK);
-  //
-  ss.tftReset();
-  //
-  ss.setBacklight(0x0);
-  // set the backlight fully on
   // MiniTFT END
 
 
   // Built In LED START
   pinMode(LED_BUILTIN, OUTPUT);
-  //
   // Built In LED END
 
 
@@ -175,49 +159,38 @@ void setup() {
   WiFi.begin(ssid, password);
   //
   while (WiFi.status() != WL_CONNECTED) {
-    //
     delay(1000);
-    //
     Serial.println("Connecting to WiFi..");
-    //
+    // Waiting for WiFi connection
   }
   Serial.println();
-  //
   Serial.print("Connected to the Internet");
-  //
   Serial.print("IP address: ");
-  //
   Serial.println(WiFi.localIP());
-  //
+  // Print details after successful connection
 
   routesConfiguration();
-  // Reads routes from routesManagement
+  // Run function to define routes before server starts to avoid errors
   server.begin();
-  //
   // WiFi & Webserver END
 
 
   // Temperature START
   if (!tempsensor.begin()) {
-    //
     Serial.println("Couldn't find ADT7410!");
-    //
     while (1);
-    //
+    // Waiting for temperature sensor start
   }
   delay(250);
-  // temp sensor takes 250 ms to start reading
+  // Temp sensor takes 250 ms to start reading once started 
   // Temperature END
 
 
   // RTC START
   if (! rtc.begin()) {
-    //
     Serial.println("Couldn't find RTC");
-    //
     Serial.flush();
-    //
-    // abort();
+    // Flush to ensure that is not the issue
   }
   if (! rtc.initialized() || rtc.lostPower()) {
     //

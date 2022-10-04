@@ -362,39 +362,33 @@ void readRFID() {
     if (rfid.PICC_ReadCardSerial()) {
       // NUID has been read
       MFRC522::PICC_Type piccType = rfid.PICC_GetType(rfid.uid.sak);
-      //
+      // Check PICC type for compatibility
       for (int i = 0; i < rfid.uid.size; i++) {
-        //
         uidOfCardRead += rfid.uid.uidByte[i] < 0x10 ? " 0" : " ";
-        //
         uidOfCardRead += rfid.uid.uidByte[i];
-        //
+        // reading the ID per letter to display
       }
       Serial.println(uidOfCardRead);
-      //
 
       rfid.PICC_HaltA();
       // halt PICC
       rfid.PCD_StopCrypto1();
       // stop encryption on PCD
       uidOfCardRead.trim();
-      //
+      // Change ID to same format to compare if it is valid
       if (uidOfCardRead == validCardUID) {
-        //
         safeLocked = false;
-        //
         logEvent("Safe Unlocked");
-        //
       } else {
         safeLocked = true;
-        //
         logEvent("Safe Locked");
-        //
+        // Change the global variable state each time the valid ID is tapped to unlock/lock
       }
     }
   }
 }
-
+// This function is needed to operate the safe's status, by reading, validating the card presented
+// Then only the checked variable to add into a simple function to open and unlock the safe
 
 void safeStatusDisplay() {
   /*

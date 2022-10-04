@@ -315,22 +315,22 @@ void printTemperature() {
 }
 // This function is a way to display temperature in real-time effectively and will be used to show guests their pod temp
 
+
 void automaticFan(float temperatureThreshold) {
-  //
+  // Get the value from loop to have more efficient and faster code
   float c = tempsensor.readTempC();
-  //
   myMotor->setSpeed(100);
-  //
+  // Change class method with argument 100, to fully turn on fan
   if (c < temperatureThreshold) {
-    //
+    // Compare current with threshold
     myMotor->run(RELEASE);
-    //
+    // Stop running because it is cool/cold
   } else {
-    //
     myMotor->run(FORWARD);
-    //
+    // Run because it is warm/hot
   }
 }
+//
 
 
 void windowShutters() {

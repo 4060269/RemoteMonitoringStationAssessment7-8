@@ -242,11 +242,9 @@ void loop() {
   automaticFan(18.3);
   // Next, run the fan trigger because this is temperature sensitive, we want it directly after to ensure consistent operation.
   windowShutters();
-  // Running windowShutters function
+  // After those functions, the order is irrelevant
   readRFID();
-  // Running readRFID function
   safeStatusDisplay();
-  // Lastly, run the safe function 
   delay(LOOPDELAY);
   // To allow time to publish new code.
 }

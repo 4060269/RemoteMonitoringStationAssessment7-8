@@ -246,7 +246,7 @@ void loop() {
   readRFID();
   // Running readRFID function
   safeStatusDisplay();
-  // Running safeStatusDisplay function
+  // Lastly, run the safe function 
   delay(LOOPDELAY);
   // To allow time to publish new code.
 }
@@ -306,7 +306,7 @@ void tftDrawText(String text, uint16_t color) {
 
 void printTemperature() {
   float c = tempsensor.readTempC();
-  // Need to take raw temp and make a float
+  // Need to take raw temp and make a float to cut unnecessary extra numbers
   String tempInC = String(c);
   //
   tftDrawText(tempInC, ST77XX_WHITE);

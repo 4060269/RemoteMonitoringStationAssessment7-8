@@ -308,11 +308,10 @@ void printTemperature() {
   float c = tempsensor.readTempC();
   // Need to take raw temp and make a float to cut unnecessary extra numbers
   String tempInC = String(c);
-  //
+  // Change it to a string to make it displayable on TFT
   tftDrawText(tempInC, ST77XX_WHITE);
-  //
+  // Pass the text and colour through to the TFT function to display
   delay(100);
-  //
 }
 // This function is a way to display temperature in real-time effectively and will be used to show guests their pod temp
 

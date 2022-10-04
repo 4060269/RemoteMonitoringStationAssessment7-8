@@ -330,22 +330,21 @@ void automaticFan(float temperatureThreshold) {
     // Run because it is warm/hot
   }
 }
-//
+// This function is one way the pod can be kept cool if the temperature inside gets to be too hot for the guests
 
 
 void windowShutters() {
-  //
   uint32_t buttons = ss.readButtons();
   //
   if (! (buttons % TFTWING_BUTTON_A)) {
     //
     if (blindsOpen) {
       myservo.write(0);
-      //
+      // Send 0 degrees to not rotate
     } else {
       //
       myservo.write(180);
-      //
+      // Send 180 degrees to rotate
     }
     blindsOpen = !blindsOpen;
     //
@@ -399,21 +398,19 @@ void readRFID() { //
 
 
 void safeStatusDisplay() {
-  //
   /*
      Outputs the status of the Safe Lock to the LEDS
      Red LED = Locked
      Green LED = Unlocked.
   */
-  if (safeLocked) { //
+  if (safeLocked) { 
     digitalWrite(LEDRed, HIGH);
-    //
     digitalWrite(LEDGreen, LOW);
-    //
+    // Turn the red LED on
   } else {
     digitalWrite(LEDRed, LOW);
-    //
     digitalWrite(LEDGreen, HIGH);
-    //
+    // Turn green on to indicate to the guests that it is unlocked
   }
 }
+// This function is the user-facing function to show the guests if the safe is unlocked or locked

@@ -333,31 +333,32 @@ void automaticFan(float temperatureThreshold) {
 
 void windowShutters() {
   uint32_t buttons = ss.readButtons();
-  //
+  // Need to group the two buttons on display into one variable, to make a simple if else statement to address each
   if (! (buttons % TFTWING_BUTTON_A)) {
-    //
+    // Scenario for first button
     if (blindsOpen) {
       myservo.write(0);
       // Send 0 degrees to not rotate
     } else {
-      //
+      // Scenario for second button
       myservo.write(180);
       // Send 180 degrees to rotate
     }
     blindsOpen = !blindsOpen;
-    //
+    // Make itself equal its inverse to reset the function
   }
 }
+// This function easily allows guests to close, open or adjust their window shutters to their liking
+// using the built in buttons on the display
 
-
-void readRFID() { //
+void readRFID() {
   String uidOfCardRead = "";
-  //
+  // Used for showing the current tag ID
   String validCardUID = "60 135 43 73";
-  //
+  // A static ID that is allowed for use
 
   if (rfid.PICC_IsNewCardPresent()) {
-    // new tag is available
+    // New tag is available
     if (rfid.PICC_ReadCardSerial()) {
       // NUID has been read
       MFRC522::PICC_Type piccType = rfid.PICC_GetType(rfid.uid.sak);

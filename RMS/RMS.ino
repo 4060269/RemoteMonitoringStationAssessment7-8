@@ -96,7 +96,7 @@ Adafruit_DCMotor *myMotor = AFMS.getMotor(4);
 
 // Servo START
 #include <ESP32Servo.h>
-Servo myservo; 
+Servo myservo;
 // Initialize servo object to control a servo
 int servoPin = 12;
 boolean blindsOpen = false;
@@ -118,10 +118,10 @@ bool safeLocked = true;
 void setup() {
   // Miscellaneous START
   Serial.begin(115200);
-  // 115200 since this is the reccomended default for ESP32
+  // 115200 since this is the reccomended default for ESP32 https://docs.espressif.com/projects/esp-idf/en/latest/esp32/get-started/establish-serial-connection.html#:~:text=The%20default%20console%20baud%20rate%20on%20ESP32%20is%20115200.
   while (!Serial) {
     delay(10);
-    // Keep waiting until serial connection is established 
+    // Keep waiting until serial connection is established
   }
   delay(1000);
 
@@ -182,7 +182,7 @@ void setup() {
     // Waiting for temperature sensor start
   }
   delay(250);
-  // Temp sensor takes 250 ms to start reading once started 
+  // Temp sensor takes 250 ms to start reading once started
   // Temperature END
 
 
@@ -217,7 +217,7 @@ void setup() {
   myservo.setPeriodHertz(50);
   // Standard 50 hz servo
   myservo.attach(servoPin, 1000, 2000);
-  // Attaches the servo to the servo object for easy functionality 
+  // Attaches the servo to the servo object for easy functionality
   // Servo END
 
 
@@ -236,11 +236,11 @@ void setup() {
 
 void loop() {
   builtinLED();
-  // Running builtinLED function
+  // First, run the dummy function
   printTemperature();
-  // Running printTemperature function
+  // Then run the temperature print out to display
   automaticFan(18.3);
-  // Running automaticFan function; passing arguement, < 20.3 degrees will trigger the fan
+  // Next, run the fan trigger because this is temperature sensitive, we want it directly after to ensure consistent operation.
   windowShutters();
   // Running windowShutters function
   readRFID();
@@ -276,40 +276,37 @@ void logEvent(String dataToLog) { //
 }
 
 
-void builtinLED() { //
-  if (LEDOn) {
-    //
+void builtinLED() {
+  if (LEDOn) { // Is true
     digitalWrite(LED_BUILTIN, HIGH);
-    //
   } else {
-    //
     digitalWrite(LED_BUILTIN, LOW);
-    //
   }
 }
+// This function is here for debugging and/or if needed as extra functionality
 
 
 void tftDrawText(String text, uint16_t color) {
-  //
   tft.fillScreen(ST77XX_BLACK);
-  //
+  // Add a layer of black for our specific display
   tft.setCursor(0, 0);
-  //
+  // Centers where all text should be printed for consistency
   tft.setTextSize(3);
-  //
+  // Only Medium-sized text is needed
   tft.setTextColor(color);
-  //
+  // Pass a colour that goes with the background colour
   tft.setTextWrap(true);
-  //
+  // To keep all text, even if too long, on screen
   tft.print(text);
-  //
+  // Print text onto display
 }
+// The functionality of the TFT is all setup with the purpose of having other functions pass their values through
+// Showing temperature would only require a simple extra function to display it
 
 
 void printTemperature() {
-  //
   float c = tempsensor.readTempC();
-  //
+  // Need to take raw temp and make a float
   String tempInC = String(c);
   //
   tftDrawText(tempInC, ST77XX_WHITE);
@@ -317,7 +314,7 @@ void printTemperature() {
   delay(100);
   //
 }
-
+// This function is a way to display temperature in real-time effectively and will be used to show guests their pod temp
 
 void automaticFan(float temperatureThreshold) {
   //

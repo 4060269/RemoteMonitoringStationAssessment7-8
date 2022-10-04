@@ -117,8 +117,8 @@ bool safeLocked = true;
 
 void setup() {
   // Miscellaneous START
-  Serial.begin(9600);
-  // 9600 for consistency 
+  Serial.begin(115200);
+  // 115200 since this is the reccomended default for ESP32
   while (!Serial) {
     delay(10);
     // Keep waiting until serial connection is established 
@@ -193,51 +193,43 @@ void setup() {
     // Flush to ensure that is not the issue
   }
   if (! rtc.initialized() || rtc.lostPower()) {
-    //
     logEvent("RTC is NOT initialized, let's set the time!");
-    //
+    // Run logEvent function with the string argument for debugging
     rtc.adjust(DateTime(F(__DATE__), F(__TIME__)));
-    //
+    // Initial setup time
   }
-  rtc.start(); //
+  rtc.start();
   // RTC END
 
 
   // MotorShield START
   AFMS.begin();
-  //
+  // Initialize AFMS object
   // MotorShield END
 
 
   // Servo START
   ESP32PWM::allocateTimer(0);
-  //
   ESP32PWM::allocateTimer(1);
-  //
   ESP32PWM::allocateTimer(2);
-  //
   ESP32PWM::allocateTimer(3);
-  //
+  // Need to set time for timer class method
   myservo.setPeriodHertz(50);
-  // standard 50 hz servo
+  // Standard 50 hz servo
   myservo.attach(servoPin, 1000, 2000);
-  // attaches the servo on pin 18 to the servo object
+  // Attaches the servo to the servo object for easy functionality 
   // Servo END
 
 
   // RFID Start
   SPI.begin();
-  // initialize SPI bus
+  // Initialize SPI bus
   rfid.PCD_Init();
-  // initialize MFRC522
+  // initialize PCD for MFRC522
   pinMode(LEDRed, OUTPUT);
-  //
   pinMode(LEDGreen, OUTPUT);
-  //
   digitalWrite(LEDRed, LOW);
-  //
   digitalWrite(LEDGreen, LOW);
-  //
   // RFID End
 
 }

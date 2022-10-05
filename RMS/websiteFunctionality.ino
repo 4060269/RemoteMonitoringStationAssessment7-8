@@ -1,9 +1,5 @@
 void routesConfiguration() {
-  
-  server.onNotFound([](AsyncWebServerRequest * request) {
-    request->send(SPIFFS, "/404.html");
-  });
-  
+
   // Example of a 'standard' route
   // Landing page to introduce all users to the interface
   // No Authentication
@@ -38,8 +34,8 @@ void routesConfiguration() {
     logEvent("Dashboard");
     request->send(SPIFFS, "/dashboard.html", "text/html", false, processor);
     // The user is not allowed to download files to ensure secure practices
-    // Run processor to check and modify certain aspects of request 
-    // Specifying user for example 
+    // Run processor to check and modify certain aspects of request
+    // Specifying user for example
   });
 
 
@@ -68,6 +64,26 @@ void routesConfiguration() {
     logEvent("Log Event Download");
     request->send(SPIFFS, "/logEvents.csv", "text/html", true);
   });
+
+  server.onNotFound([](AsyncWebServerRequest * request) {
+    request->send(SPIFFS, "/404.html");
+  });
+
+  server.on("/SafeLock",  HTTP_GET, [](AsyncWebServerRequest * request) {
+    if (!request->authenticate(http_username, http_password))
+      return request->requestAuthentication();
+    safeLocked = true;
+    logEvent("Safe Locked via Website");
+    request->send(SPIFFS, "/dashboard.html", "text/html", false, processor);
+  });
+
+  server.on("/SafeUnlock",  HTTP_GET, [](AsyncWebServerRequest * request) {
+    if (!request->authenticate(http_username, http_password))
+      return request->requestAuthentication();
+    safeLocked = false;
+    logEvent("Safe Unlocked via Website");
+    request->send(SPIFFS, "/dashboard.html", "text/html", false, processor);
+  });
 }
 
 String getDateTime() {
@@ -94,7 +110,7 @@ String processor(const String & var) {
   // Reading current date and time from sensor to display onto website
 
   if (var == "TEMPERATURE") {
-  return String(tempsensor.readTempC());
+    return String(tempsensor.readTempC());
   }
   // Reading current temperature from sensor to display onto website
 

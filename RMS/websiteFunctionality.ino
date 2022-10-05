@@ -84,6 +84,30 @@ void routesConfiguration() {
     logEvent("Safe Unlocked via Website");
     request->send(SPIFFS, "/dashboard.html", "text/html", false, processor);
   });
+
+  server.on("/FanManualOn",  HTTP_GET, [](AsyncWebServerRequest * request) {
+    if (!request->authenticate(http_username, http_password))
+      return request->requestAuthentication();
+    fanEnabled = true;
+    logEvent("Fan Manual Control: On");
+    request->send(SPIFFS, "/dashboard.html", "text/html", false, processor);
+  });
+
+  server.on("/FanManualOff",  HTTP_GET, [](AsyncWebServerRequest * request) {
+    if (!request->authenticate(http_username, http_password))
+      return request->requestAuthentication();
+    fanEnabled = false;
+    logEvent("Fan Manual Control: Off");
+    request->send(SPIFFS, "/dashboard.html", "text/html", false, processor);
+  });
+  
+  server.on("/FanControl",  HTTP_GET, [](AsyncWebServerRequest * request) {
+    if (!request->authenticate(http_username, http_password))
+      return request->requestAuthentication();
+    automaticFanControl = !automaticFanControl;
+    logEvent("Fan Manual Control: On");
+    request->send(SPIFFS, "/dashboard.html", "text/html", false, processor);
+  });
 }
 
 String getDateTime() {
@@ -114,6 +138,14 @@ String processor(const String & var) {
   }
   // Reading current temperature from sensor to display onto website
 
-  // Default "catch" which will return nothing in case the HTML has no variable to replace.
+  if (var == "FANCONTROL") {
+  if (automaticFanControl) {
+    return "Automatic";
+  } else {
+    return "Manual";
+  }
+}
+  
   return String();
+  // Default "catch" which will return nothing in case the HTML has no variable to replace.
 }

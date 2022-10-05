@@ -92,6 +92,10 @@ RTC_PCF8523 rtc;
 Adafruit_MotorShield AFMS = Adafruit_MotorShield();
 Adafruit_DCMotor *myMotor = AFMS.getMotor(4);
 // Initialize DC Motor object and pass the pin for functionailty
+bool fanEnabled = false;
+// If the fan is on or off.
+bool automaticFanControl = true;
+// Automatic or manual control
 // MotorShield END
 
 // Servo START
@@ -321,14 +325,28 @@ void automaticFan(float temperatureThreshold) {
   // Change class method with argument 100, to fully turn on fan
   if (c < temperatureThreshold) {
     // Compare current with threshold
-    myMotor->run(RELEASE);
+    fanEnabled = false;
     // Stop running because it is cool/cold
   } else {
-    myMotor->run(FORWARD);
+    fanEnabled = true;
     // Run because it is warm/hot
   }
 }
-// This function is one way the pod can be kept cool if the temperature inside gets to be too hot for the guests
+// This function is one way the pod automatically can be kept cool if the temperature inside gets to be too hot for the guests
+
+void fanControl() {
+  if (automaticFanControl) {
+    automaticFan(25.0);
+  }
+  // Run automatic fan control if the guests have set it or enable manual control
+  if (fanEnabled) {
+    myMotor->run(FORWARD);
+  } else {
+    myMotor->run(RELEASE);
+  }
+  // This will simply start and stop the motor
+}
+// This function is other alternative to controlling temperature in the pod, by letting the guests manually do it
 
 
 void windowShutters() {
@@ -396,7 +414,7 @@ void safeStatusDisplay() {
      Red LED = Locked
      Green LED = Unlocked.
   */
-  if (safeLocked) { 
+  if (safeLocked) {
     digitalWrite(LEDRed, HIGH);
     digitalWrite(LEDGreen, LOW);
     // Turn the red LED on

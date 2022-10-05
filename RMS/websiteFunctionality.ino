@@ -78,7 +78,7 @@ String getDateTime() {
 }
 // Find and store the current date & time for logged events as a string
 
-String processor(const String& var) {
+String processor(const String & var) {
   /*
      Updates the HTML by replacing set variables with return value from here.
      For example:
@@ -91,6 +91,12 @@ String processor(const String& var) {
     String datetime = getDateTime();
     return datetime;
   }
+  // Reading current date and time from sensor to display onto website
+
+  if (var == "TEMPERATURE") {
+  return String(tempsensor.readTempC());
+  }
+  // Reading current temperature from sensor to display onto website
 
   // Default "catch" which will return nothing in case the HTML has no variable to replace.
   return String();

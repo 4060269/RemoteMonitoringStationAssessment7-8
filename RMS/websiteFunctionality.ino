@@ -72,7 +72,7 @@ String getDateTime() {
   sprintf(csvReadableDate, "%02d:%02d:%02d %02d/%02d/%02d",  rightNow.hour(), rightNow.minute(), rightNow.second(), rightNow.day(), rightNow.month(), rightNow.year());
   return csvReadableDate;
 }
-// Find and store the current date & time for logged events
+// Find and store the current date & time for logged events as a string
 
 String processor(const String& var) {
   /*

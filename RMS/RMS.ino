@@ -243,10 +243,9 @@ void loop() {
   // First, run the dummy function
   printTemperature();
   // Then run the temperature print out to display
-  automaticFan(18.3);
-  // Next, run the fan trigger because this is temperature sensitive, we want it directly after to ensure consistent operation.
-  windowShutters();
+  fanControl();
   // After those functions, the order is irrelevant
+  windowShutters();
   readRFID();
   safeStatusDisplay();
   delay(LOOPDELAY);

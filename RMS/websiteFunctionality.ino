@@ -1,5 +1,9 @@
 void routesConfiguration() {
-
+  
+  server.onNotFound([](AsyncWebServerRequest * request) {
+    request->send(SPIFFS, "/404.html");
+  });
+  
   // Example of a 'standard' route
   // Landing page to introduce all users to the interface
   // No Authentication

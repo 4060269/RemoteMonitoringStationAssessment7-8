@@ -100,7 +100,7 @@ void routesConfiguration() {
     logEvent("Fan Manual Control: Off");
     request->send(SPIFFS, "/dashboard.html", "text/html", false, processor);
   });
-  
+
   server.on("/FanControl",  HTTP_GET, [](AsyncWebServerRequest * request) {
     if (!request->authenticate(http_username, http_password))
       return request->requestAuthentication();
@@ -139,13 +139,14 @@ String processor(const String & var) {
   // Reading current temperature from sensor to display onto website
 
   if (var == "FANCONTROL") {
-  if (automaticFanControl) {
-    return "Automatic";
-  } else {
-    return "Manual";
+    if (automaticFanControl) {
+      return "Automatic";
+    } else {
+      return "Manual";
+    }
   }
-}
-  
+  // Determining manual or automatic fan control when a user tries to change it through the website
+
   return String();
   // Default "catch" which will return nothing in case the HTML has no variable to replace.
 }

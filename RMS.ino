@@ -164,15 +164,25 @@ void setup() {
   //
   while (WiFi.status() != WL_CONNECTED) {
     delay(1000);
+    tftDrawText("Connecting to WiFi..", ST77XX_RED);
     Serial.println("Connecting to WiFi..");
     // Waiting for WiFi connection
   }
+  tft.fillScreen(ST77XX_BLACK);
   Serial.println();
   Serial.print("Connected to the Internet");
   Serial.print("IP address: ");
-  Serial.println(WiFi.localIP());
-  // Print details after successful connection
+  String ip = WiFi.localIP().toString();
+  Serial.println(ip);
+  // Print details to serial after successful connection
 
+  // Display IP on TFT
+  tft.setCursor(0, 60);
+  tft.setTextSize(2);
+  tft.setTextColor(ST77XX_WHITE, ST77XX_BLACK);
+  tft.setTextWrap(true);
+  tft.print(ip);
+  
   routesConfiguration();
   // Run function to define routes before server starts to avoid errors
   server.begin();
@@ -289,13 +299,11 @@ void builtinLED() {
 
 
 void tftDrawText(String text, uint16_t color) {
-  tft.fillScreen(ST77XX_BLACK);
-  // Add a layer of black for our specific display
   tft.setCursor(0, 0);
   // Centers where all text should be printed for consistency
   tft.setTextSize(3);
   // Only Medium-sized text is needed
-  tft.setTextColor(color);
+  tft.setTextColor(color, ST77XX_BLACK);
   // Pass a colour that goes with the background colour
   tft.setTextWrap(true);
   // To keep all text, even if too long, on screen
@@ -303,7 +311,6 @@ void tftDrawText(String text, uint16_t color) {
   // Depending on setup, may need to rotate
   tft.print(text);
   // Print text onto display
-  logEvent("TFT successfully displayed all info");
 }
 // The functionality of the TFT is all setup with the purpose of having other functions pass their values through
 // Showing temperature would only require a simple extra function to display it
@@ -340,7 +347,7 @@ void automaticFan(float temperatureThreshold) {
 
 void fanControl() {
   if (automaticFanControl) {
-    automaticFan(25.0);
+    automaticFan(21.0);
   }
   // Run automatic fan control if the guests have set it or enable manual control
   if (fanEnabled) {

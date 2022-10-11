@@ -23,6 +23,11 @@
     Adafruit ST7735 and ST7789 Library (1.9.3) by Adafruit
     ESP32Servo (0.11.0) by Kevin Harrington
     MFRC522 (1.4.10) by GithubCommunity
+
+    Board Configuration:
+    Adafruit HUZZAH32 – ESP32 Feather Board
+    Add https://raw.githubusercontent.com/espressif/arduino-esp32/gh-pages/package_esp32_index.json to Additional Boards Manager URLs located in "File, Preferences"
+    Install esp32 (2.0.5) by Espressif Systems in "Tools, Board, Boards Manager"
 */
 
 // Miscellaneous START
@@ -107,8 +112,8 @@ boolean blindsOpen = false;
 // Servo END
 
 // RFID Start
-#define LEDRed 27
-#define LEDGreen 33
+#define LEDRed 33
+#define LEDGreen 27
 #include <SPI.h>
 #include <MFRC522.h>
 #define SS_PIN  21
@@ -164,15 +169,25 @@ void setup() {
   //
   while (WiFi.status() != WL_CONNECTED) {
     delay(1000);
+    tftDrawText("Connecting to WiFi..", ST77XX_RED);
     Serial.println("Connecting to WiFi..");
     // Waiting for WiFi connection
   }
+  tft.fillScreen(ST77XX_BLACK);
   Serial.println();
   Serial.print("Connected to the Internet");
   Serial.print("IP address: ");
-  Serial.println(WiFi.localIP());
-  // Print details after successful connection
+  String ip = WiFi.localIP().toString();
+  Serial.println(ip);
+  // Print details to serial after successful connection
 
+  // Display IP on TFT
+  tft.setCursor(0, 60);
+  tft.setTextSize(2);
+  tft.setTextColor(ST77XX_WHITE, ST77XX_BLACK);
+  tft.setTextWrap(true);
+  tft.print(ip);
+  
   routesConfiguration();
   // Run function to define routes before server starts to avoid errors
   server.begin();
@@ -278,7 +293,8 @@ void logEvent(String dataToLog) { //
 
 
 void builtinLED() {
-  if (LEDOn) { // Is true
+  if (LEDOn) { 
+    // Is true
     digitalWrite(LED_BUILTIN, HIGH);
   } else {
     digitalWrite(LED_BUILTIN, LOW);
@@ -288,16 +304,16 @@ void builtinLED() {
 
 
 void tftDrawText(String text, uint16_t color) {
-  tft.fillScreen(ST77XX_BLACK);
-  // Add a layer of black for our specific display
   tft.setCursor(0, 0);
   // Centers where all text should be printed for consistency
   tft.setTextSize(3);
   // Only Medium-sized text is needed
-  tft.setTextColor(color);
+  tft.setTextColor(color, ST77XX_BLACK);
   // Pass a colour that goes with the background colour
   tft.setTextWrap(true);
   // To keep all text, even if too long, on screen
+  tft.setRotation(3);
+  // Depending on setup, may need to rotate
   tft.print(text);
   // Print text onto display
 }
@@ -328,6 +344,7 @@ void automaticFan(float temperatureThreshold) {
     // Stop running because it is cool/cold
   } else {
     fanEnabled = true;
+    logEvent("Temperature triggered fan on");
     // Run because it is warm/hot
   }
 }
@@ -335,7 +352,7 @@ void automaticFan(float temperatureThreshold) {
 
 void fanControl() {
   if (automaticFanControl) {
-    automaticFan(25.0);
+    automaticFan(21.0);
   }
   // Run automatic fan control if the guests have set it or enable manual control
   if (fanEnabled) {
@@ -355,10 +372,12 @@ void windowShutters() {
     // Scenario for first button
     if (blindsOpen) {
       myservo.write(0);
+      logEvent("TFT button 1 wrote to servo");
       // Send 0 degrees to not rotate
     } else {
       // Scenario for second button
       myservo.write(180);
+      logEvent("TFT button 2 wrote to servo");
       // Send 180 degrees to rotate
     }
     blindsOpen = !blindsOpen;

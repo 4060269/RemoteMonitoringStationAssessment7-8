@@ -11,7 +11,7 @@ void routesConfiguration() {
     // Log for debug/analysis
     request->send(SPIFFS, "/index.html", "text/html");
     // In the made request, send back the html that can be found in SPIFFS
-  })
+  });
 
   // Duplicated serving of index.html route, so the IP can be entered directly to browser
   // No Authentication
@@ -45,6 +45,7 @@ void routesConfiguration() {
     if (!request->authenticate(http_username, http_password))
       return request->requestAuthentication();
     LEDOn = true;
+    logEvent("LED turned on from website");
     request->send(SPIFFS, "/dashboard.html", "text/html", false, processor);
   });
 
@@ -53,6 +54,7 @@ void routesConfiguration() {
     if (!request->authenticate(http_username, http_password))
       return request->requestAuthentication();
     LEDOn = false;
+    logEvent("LED turned off from website");
     request->send(SPIFFS, "/dashboard.html", "text/html", false, processor);
   });
 
@@ -61,7 +63,7 @@ void routesConfiguration() {
   server.on("/logOutput", HTTP_GET, [](AsyncWebServerRequest * request) {
     if (!request->authenticate(http_username, http_password))
       return request->requestAuthentication();
-    logEvent("Log Event Download");
+    logEvent("Log Event Downloaded");
     request->send(SPIFFS, "/logEvents.csv", "text/html", true);
   });
 

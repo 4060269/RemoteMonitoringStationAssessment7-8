@@ -14,6 +14,9 @@
     Safe Security Subsystem via RFID Reader MFRC522 | Red & Green LEDS
     - MFRC522
 
+    Software:
+    Ardiuno IDE (1.8.13) by Arduino
+
     Libraries:
     AsyncTCP (Latest as of 17/10/19) by me-no-dev
     ESPAsyncWebServer (Latest as of 26/3/22) by me-no-dev
@@ -27,7 +30,7 @@
     Board Configuration:
     Adafruit HUZZAH32 – ESP32 Feather Board
     Add https://raw.githubusercontent.com/espressif/arduino-esp32/gh-pages/package_esp32_index.json to Additional Boards Manager URLs located in "File, Preferences"
-    Install esp32 (2.0.5) by Espressif Systems in "Tools, Board, Boards Manager"
+    Then install esp32 (2.0.5) by Espressif Systems in "Tools, Board, Boards Manager"
 */
 
 // Miscellaneous START
@@ -99,7 +102,7 @@ Adafruit_DCMotor *myMotor = AFMS.getMotor(4);
 // Initialize DC Motor object and pass the pin for functionailty
 bool fanEnabled = false;
 // If the fan is on or off.
-bool automaticFanControl = true;
+bool autoFanEnabled = true;
 // Automatic or manual control
 // MotorShield END
 
@@ -127,7 +130,7 @@ bool safeLocked = true;
 void setup() {
   // Miscellaneous START
   Serial.begin(115200);
-  // 115200 since this is the reccomended default for ESP32 https://docs.espressif.com/projects/esp-idf/en/latest/esp32/get-started/establish-serial-connection.html#:~:text=The%20default%20console%20baud%20rate%20on%20ESP32%20is%20115200.
+  // 115200 since this is the default for ESP32 https://docs.espressif.com/projects/esp-idf/en/latest/esp32/get-started/establish-serial-connection.html#:~:text=The%20default%20console%20baud%20rate%20on%20ESP32%20is%20115200.
   while (!Serial) {
     delay(10);
     // Keep waiting until serial connection is established
@@ -187,7 +190,7 @@ void setup() {
   tft.setTextColor(ST77XX_WHITE, ST77XX_BLACK);
   tft.setTextWrap(true);
   tft.print(ip);
-  
+
   routesConfiguration();
   // Run function to define routes before server starts to avoid errors
   server.begin();
@@ -258,6 +261,9 @@ void loop() {
   // First, run the dummy function
   printTemperature();
   // Then run the temperature print out to display
+  if (autoFanEnabled) {
+    automaticFan(22.00);
+  }
   fanControl();
   // After those functions, the order is irrelevant
   windowShutters();
@@ -293,7 +299,7 @@ void logEvent(String dataToLog) { //
 
 
 void builtinLED() {
-  if (LEDOn) { 
+  if (LEDOn) {
     // Is true
     digitalWrite(LED_BUILTIN, HIGH);
   } else {
@@ -335,31 +341,29 @@ void printTemperature() {
 
 void automaticFan(float temperatureThreshold) {
   // Get the value from loop to have more efficient and faster code
-  float c = tempsensor.readTempC();
+  float currentTemp = tempsensor.readTempC();
   myMotor->setSpeed(100);
   // Change class method with argument 100, to fully turn on fan
-  if (c < temperatureThreshold) {
+  if (currentTemp > temperatureThreshold) {
     // Compare current with threshold
-    fanEnabled = false;
+    fanEnabled = true;
     // Stop running because it is cool/cold
   } else {
-    fanEnabled = true;
-    logEvent("Temperature triggered fan on");
+    fanEnabled = false;
+    //logEvent("Temperature triggered fan on");
     // Run because it is warm/hot
   }
 }
 // This function is one way the pod automatically can be kept cool if the temperature inside gets to be too hot for the guests
 
 void fanControl() {
-  if (automaticFanControl) {
-    automaticFan(21.0);
-  }
-  // Run automatic fan control if the guests have set it or enable manual control
   if (fanEnabled) {
+    myMotor->setSpeed(150);
     myMotor->run(FORWARD);
   } else {
     myMotor->run(RELEASE);
   }
+  // Run automatic fan control if the guests have set it or enable manual control
   // This will simply start and stop the motor
 }
 // This function is other alternative to controlling temperature in the pod, by letting the guests manually do it
@@ -368,16 +372,17 @@ void fanControl() {
 void windowShutters() {
   uint32_t buttons = ss.readButtons();
   // Need to group the two buttons on display into one variable, to make a simple if else statement to address each
-  if (! (buttons % TFTWING_BUTTON_A)) {
+  if (! (buttons & TFTWING_BUTTON_A)) {
     // Scenario for first button
     if (blindsOpen) {
       myservo.write(0);
-      logEvent("TFT button 1 wrote to servo");
+      logEvent("Blinds opening");
       // Send 0 degrees to not rotate
+      delay(1000);
     } else {
       // Scenario for second button
       myservo.write(180);
-      logEvent("TFT button 2 wrote to servo");
+      logEvent("Blinds closing");
       // Send 180 degrees to rotate
     }
     blindsOpen = !blindsOpen;

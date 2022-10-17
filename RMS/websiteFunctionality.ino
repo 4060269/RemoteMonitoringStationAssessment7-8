@@ -1,18 +1,9 @@
 void routesConfiguration() {
 
-  // Example of a 'standard' route
-  // Landing page to introduce all users to the interface
-  // No Authentication
-  server.on("/index.html", HTTP_GET, [](AsyncWebServerRequest * request) {
-    // When the user tries to access the website, show index.html
-    // Allow the client to download specific resources using HTTP_GET; "/index.html"
-    // Web server continuously listens, AsyncWebServerRequest wraps the new client
-    logEvent("route: /");
-    // Log for debug/analysis
-    request->send(SPIFFS, "/index.html", "text/html");
-    // In the made request, send back the html that can be found in SPIFFS
+  server.onNotFound([](AsyncWebServerRequest * request) {
+    request->send(SPIFFS, "/404.html");
   });
-
+  
   // Duplicated serving of index.html route, so the IP can be entered directly to browser
   // No Authentication
   server.on("/", HTTP_GET, [](AsyncWebServerRequest * request) {
@@ -25,6 +16,18 @@ void routesConfiguration() {
     request->send(SPIFFS, "/arduino.css", "text/css");
   });
 
+  // Example of a 'standard' route
+  // Landing page to introduce all users to the interface
+  // No Authentication
+  server.on("/index.html", HTTP_GET, [](AsyncWebServerRequest * request) {
+    // When the user tries to access the website, show index.html
+    // Allow the client to download specific resources using HTTP_GET; "/index.html"
+    // Web server continuously listens, AsyncWebServerRequest wraps the new client
+    logEvent("route: /");
+    // Log for debug/analysis
+    request->send(SPIFFS, "/index.html", "text/html");
+    // In the made request, send back the html that can be found in SPIFFS
+  });
 
   // Example of a route with additional authentication (popup in browser)
   // And uses the processor function.
@@ -67,10 +70,6 @@ void routesConfiguration() {
     request->send(SPIFFS, "/logEvents.csv", "text/html", true);
   });
 
-  server.onNotFound([](AsyncWebServerRequest * request) {
-    request->send(SPIFFS, "/404.html");
-  });
-
   server.on("/SafeLock",  HTTP_GET, [](AsyncWebServerRequest * request) {
     if (!request->authenticate(http_username, http_password))
       return request->requestAuthentication();
@@ -106,7 +105,7 @@ void routesConfiguration() {
   server.on("/FanControl",  HTTP_GET, [](AsyncWebServerRequest * request) {
     if (!request->authenticate(http_username, http_password))
       return request->requestAuthentication();
-    automaticFanControl = !automaticFanControl;
+    autoFanEnabled = !autoFanEnabled;
     logEvent("Fan Manual Control: On");
     request->send(SPIFFS, "/dashboard.html", "text/html", false, processor);
   });
@@ -141,7 +140,7 @@ String processor(const String & var) {
   // Reading current temperature from sensor to display onto website
 
   if (var == "FANCONTROL") {
-    if (automaticFanControl) {
+    if (automaticFan) {
       return "Automatic";
     } else {
       return "Manual";

@@ -14,6 +14,9 @@
     Safe Security Subsystem via RFID Reader MFRC522 | Red & Green LEDS
     - MFRC522
 
+    Software:
+    Ardiuno IDE (1.8.13) by Arduino
+
     Libraries:
     AsyncTCP (Latest as of 17/10/19) by me-no-dev
     ESPAsyncWebServer (Latest as of 26/3/22) by me-no-dev
@@ -27,7 +30,7 @@
     Board Configuration:
     Adafruit HUZZAH32 – ESP32 Feather Board
     Add https://raw.githubusercontent.com/espressif/arduino-esp32/gh-pages/package_esp32_index.json to Additional Boards Manager URLs located in "File, Preferences"
-    Install esp32 (2.0.5) by Espressif Systems in "Tools, Board, Boards Manager"
+    Then install esp32 (2.0.5) by Espressif Systems in "Tools, Board, Boards Manager"
 */
 
 // Miscellaneous START

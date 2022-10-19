@@ -32,13 +32,14 @@ void routesConfiguration() {
   // Example of a route with additional authentication (popup in browser)
   // And uses the processor function.
   server.on("/guestDashboard.html", HTTP_GET, [](AsyncWebServerRequest * request) {
-    if (!request->authenticate(guest_http_username, guest_http_password) || !request->authenticate(admin_http_username, admin_http_password))
+    if (!request->authenticate(guest_http_username, guest_http_password))
       return request->requestAuthentication();
     logEvent("Dashboard");
-    request->send(SPIFFS, "/dashboard.html", "text/html", false, processor);
+    request->send(SPIFFS, "/guestDashboard.html", "text/html", false, processor);
     // The user is not allowed to download files to ensure secure practices
     // Run processor to check and modify certain aspects of request
     // Specifying user for example
+    // || !request->authenticate(admin_http_username, admin_http_password)
   });
 
     server.on("/adminDashboard.html", HTTP_GET, [](AsyncWebServerRequest * request) {
@@ -59,7 +60,7 @@ void routesConfiguration() {
       return request->requestAuthentication();
     LEDOn = true;
     logEvent("LED turned on from website");
-    request->send(SPIFFS, "/dashboard.html", "text/html", false, processor);
+    request->send(SPIFFS, "/guestDashboard.html", "text/html", false, processor);
   });
 
 
@@ -68,7 +69,7 @@ void routesConfiguration() {
       return request->requestAuthentication();
     LEDOn = false;
     logEvent("LED turned off from website");
-    request->send(SPIFFS, "/dashboard.html", "text/html", false, processor);
+    request->send(SPIFFS, "/guestDashboard.html", "text/html", false, processor);
   });
 
 
@@ -85,7 +86,7 @@ void routesConfiguration() {
       return request->requestAuthentication();
     safeLocked = true;
     logEvent("Safe Locked via Website");
-    request->send(SPIFFS, "/dashboard.html", "text/html", false, processor);
+    request->send(SPIFFS, "/guestDashboard.html", "text/html", false, processor);
   });
 
   server.on("/SafeUnlock",  HTTP_GET, [](AsyncWebServerRequest * request) {
@@ -93,7 +94,7 @@ void routesConfiguration() {
       return request->requestAuthentication();
     safeLocked = false;
     logEvent("Safe Unlocked via Website");
-    request->send(SPIFFS, "/dashboard.html", "text/html", false, processor);
+    request->send(SPIFFS, "/guestDashboard.html", "text/html", false, processor);
   });
 
   server.on("/FanOn",  HTTP_GET, [](AsyncWebServerRequest * request) {
@@ -101,7 +102,7 @@ void routesConfiguration() {
       return request->requestAuthentication();
     fanEnabled = true;
     logEvent("Fan Manual Control: On");
-    request->send(SPIFFS, "/dashboard.html", "text/html", false, processor);
+    request->send(SPIFFS, "/guestDashboard.html", "text/html", false, processor);
   });
 
   server.on("/FanOff",  HTTP_GET, [](AsyncWebServerRequest * request) {
@@ -109,7 +110,7 @@ void routesConfiguration() {
       return request->requestAuthentication();
     fanEnabled = false;
     logEvent("Fan Manual Control: Off");
-    request->send(SPIFFS, "/dashboard.html", "text/html", false, processor);
+    request->send(SPIFFS, "/guestDashboard.html", "text/html", false, processor);
   });
 
   server.on("/FanControl",  HTTP_GET, [](AsyncWebServerRequest * request) {
@@ -117,7 +118,7 @@ void routesConfiguration() {
       return request->requestAuthentication();
     autoFanEnabled = !autoFanEnabled;
     logEvent("Fan Manual Control: On");
-    request->send(SPIFFS, "/dashboard.html", "text/html", false, processor);
+    request->send(SPIFFS, "/guestDashboard.html", "text/html", false, processor);
   });
 }
 

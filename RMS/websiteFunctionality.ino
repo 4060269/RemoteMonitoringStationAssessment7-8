@@ -31,7 +31,7 @@ void routesConfiguration() {
 
   // Example of a route with additional authentication (popup in browser)
   // And uses the processor function.
-  server.on("/dashboard.html", HTTP_GET, [](AsyncWebServerRequest * request) {
+  server.on("/guestDashboard.html", HTTP_GET, [](AsyncWebServerRequest * request) {
     if (!request->authenticate(guest_http_username, guest_http_password) || !request->authenticate(admin_http_username, admin_http_password))
       return request->requestAuthentication();
     logEvent("Dashboard");
@@ -45,7 +45,7 @@ void routesConfiguration() {
     if (!request->authenticate(admin_http_username, admin_http_password))
       return request->requestAuthentication();
     logEvent("Admin Dashboard");
-    request->send(SPIFFS, "/adminDashboard.html", "text/html", true, processor);
+    request->send(SPIFFS, "/adminDashboard.html", "text/html", false, processor);
     // The admin is now allowed to download files
     // Run processor to check and modify certain aspects of request
     // Specifying user for examples

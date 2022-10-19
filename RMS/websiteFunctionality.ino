@@ -55,7 +55,7 @@ void routesConfiguration() {
   // Example of route with authentication, and use of processor
   // Also demonstrates how to have arduino functionality included (turn LED on)
   server.on("/LEDOn", HTTP_GET, [](AsyncWebServerRequest * request) {
-    if (!request->authenticate(http_username, http_password))
+    if (!request->authenticate(guest_http_username, guest_http_password))
       return request->requestAuthentication();
     LEDOn = true;
     logEvent("LED turned on from website");
@@ -64,7 +64,7 @@ void routesConfiguration() {
 
 
   server.on("/LEDOff", HTTP_GET, [](AsyncWebServerRequest * request) {
-    if (!request->authenticate(http_username, http_password))
+    if (!request->authenticate(guest_http_username, guest_http_password))
       return request->requestAuthentication();
     LEDOn = false;
     logEvent("LED turned off from website");
@@ -74,14 +74,14 @@ void routesConfiguration() {
 
   // Example of route which sets file to download - 'true' in send() command.
   server.on("/logOutput", HTTP_GET, [](AsyncWebServerRequest * request) {
-    if (!request->authenticate(http_username, http_password))
+    if (!request->authenticate(guest_http_username, guest_http_password))
       return request->requestAuthentication();
     logEvent("Log Event Downloaded");
     request->send(SPIFFS, "/logEvents.csv", "text/html", true);
   });
 
   server.on("/SafeLock",  HTTP_GET, [](AsyncWebServerRequest * request) {
-    if (!request->authenticate(http_username, http_password))
+    if (!request->authenticate(guest_http_username, guest_http_password))
       return request->requestAuthentication();
     safeLocked = true;
     logEvent("Safe Locked via Website");
@@ -89,7 +89,7 @@ void routesConfiguration() {
   });
 
   server.on("/SafeUnlock",  HTTP_GET, [](AsyncWebServerRequest * request) {
-    if (!request->authenticate(http_username, http_password))
+    if (!request->authenticate(guest_http_username, guest_http_password))
       return request->requestAuthentication();
     safeLocked = false;
     logEvent("Safe Unlocked via Website");
@@ -97,7 +97,7 @@ void routesConfiguration() {
   });
 
   server.on("/FanOn",  HTTP_GET, [](AsyncWebServerRequest * request) {
-    if (!request->authenticate(http_username, http_password))
+    if (!request->authenticate(guest_http_username, guest_http_password))
       return request->requestAuthentication();
     fanEnabled = true;
     logEvent("Fan Manual Control: On");
@@ -105,7 +105,7 @@ void routesConfiguration() {
   });
 
   server.on("/FanOff",  HTTP_GET, [](AsyncWebServerRequest * request) {
-    if (!request->authenticate(http_username, http_password))
+    if (!request->authenticate(guest_http_username, guest_http_password))
       return request->requestAuthentication();
     fanEnabled = false;
     logEvent("Fan Manual Control: Off");
@@ -113,7 +113,7 @@ void routesConfiguration() {
   });
 
   server.on("/FanControl",  HTTP_GET, [](AsyncWebServerRequest * request) {
-    if (!request->authenticate(http_username, http_password))
+    if (!request->authenticate(guest_http_username, guest_http_password))
       return request->requestAuthentication();
     autoFanEnabled = !autoFanEnabled;
     logEvent("Fan Manual Control: On");

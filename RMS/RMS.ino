@@ -264,7 +264,7 @@ void loop() {
   if (autoFanEnabled) {
     automaticFan(22.00);
   }
-  fanControl();
+  fanController();
   // After those functions, the order is irrelevant
   windowShutters();
   readRFID();
@@ -356,7 +356,7 @@ void automaticFan(float temperatureThreshold) {
 }
 // This function is one way the pod automatically can be kept cool if the temperature inside gets to be too hot for the guests
 
-void fanControl() {
+void fanController() {
   if (fanEnabled) {
     myMotor->setSpeed(150);
     myMotor->run(FORWARD);

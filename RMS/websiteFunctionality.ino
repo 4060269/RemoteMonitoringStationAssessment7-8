@@ -3,7 +3,7 @@ void routesConfiguration() {
   server.onNotFound([](AsyncWebServerRequest * request) {
     request->send(SPIFFS, "/404.html");
   });
-  
+
   // Duplicated serving of index.html route, so the IP can be entered directly to browser
   // No Authentication
   server.on("/", HTTP_GET, [](AsyncWebServerRequest * request) {
@@ -86,7 +86,7 @@ void routesConfiguration() {
     request->send(SPIFFS, "/dashboard.html", "text/html", false, processor);
   });
 
-  server.on("/FanManualOn",  HTTP_GET, [](AsyncWebServerRequest * request) {
+  server.on("/FanOn",  HTTP_GET, [](AsyncWebServerRequest * request) {
     if (!request->authenticate(http_username, http_password))
       return request->requestAuthentication();
     fanEnabled = true;
@@ -94,7 +94,7 @@ void routesConfiguration() {
     request->send(SPIFFS, "/dashboard.html", "text/html", false, processor);
   });
 
-  server.on("/FanManualOff",  HTTP_GET, [](AsyncWebServerRequest * request) {
+  server.on("/FanOff",  HTTP_GET, [](AsyncWebServerRequest * request) {
     if (!request->authenticate(http_username, http_password))
       return request->requestAuthentication();
     fanEnabled = false;
@@ -144,6 +144,14 @@ String processor(const String & var) {
       return "Automatic";
     } else {
       return "Manual";
+    }
+  }
+
+  if (var == "INVFANCONTROL") {
+    if (autoFanEnabled) {
+      return "  ";
+    } else {
+      return "Automatic";
     }
   }
   // Determining manual or automatic fan control when a user tries to change it through the website

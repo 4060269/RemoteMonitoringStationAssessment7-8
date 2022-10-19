@@ -160,7 +160,7 @@ String processor(const String & var) {
 
   if (var == "INVFANCONTROL") {
     if (autoFanEnabled) {
-      return "  ";
+      return "Manual";
     } else {
       return "Automatic";
     }

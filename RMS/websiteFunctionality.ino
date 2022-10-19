@@ -7,7 +7,7 @@ void routesConfiguration() {
   // Duplicated serving of index.html route, so the IP can be entered directly to browser
   // No Authentication
   server.on("/", HTTP_GET, [](AsyncWebServerRequest * request) {
-    logEvent("route: /");
+    logEvent("New connection to root: /");
     request->send(SPIFFS, "/index.html", "text/html");
   });
 
@@ -23,7 +23,7 @@ void routesConfiguration() {
     // When the user tries to access the website, show index.html
     // Allow the client to download specific resources using HTTP_GET; "/index.html"
     // Web server continuously listens, AsyncWebServerRequest wraps the new client
-    logEvent("route: /");
+    logEvent("New connection to root: /");
     // Log for debug/analysis
     request->send(SPIFFS, "/index.html", "text/html");
     // In the made request, send back the html that can be found in SPIFFS
@@ -34,7 +34,7 @@ void routesConfiguration() {
   server.on("/guestDashboard.html", HTTP_GET, [](AsyncWebServerRequest * request) {
     if (!request->authenticate(guest_http_username, guest_http_password))
       return request->requestAuthentication();
-    logEvent("Dashboard");
+    logEvent("Guest Dashboard accessed");
     request->send(SPIFFS, "/guestDashboard.html", "text/html", false, processor);
     // The user is not allowed to download files to ensure secure practices
     // Run processor to check and modify certain aspects of request
@@ -45,7 +45,7 @@ void routesConfiguration() {
     server.on("/adminDashboard.html", HTTP_GET, [](AsyncWebServerRequest * request) {
     if (!request->authenticate(admin_http_username, admin_http_password))
       return request->requestAuthentication();
-    logEvent("Admin Dashboard");
+    logEvent("Admin Dashboard accessed");
     request->send(SPIFFS, "/adminDashboard.html", "text/html", false, processor);
     // The admin is now allowed to download files
     // Run processor to check and modify certain aspects of request
@@ -59,7 +59,7 @@ void routesConfiguration() {
     if (!request->authenticate(guest_http_username, guest_http_password))
       return request->requestAuthentication();
     LEDOn = true;
-    logEvent("LED turned on from website");
+    logEvent("LED: on via Guest Dashboard");
     request->send(SPIFFS, "/guestDashboard.html", "text/html", false, processor);
   });
 
@@ -68,16 +68,16 @@ void routesConfiguration() {
     if (!request->authenticate(guest_http_username, guest_http_password))
       return request->requestAuthentication();
     LEDOn = false;
-    logEvent("LED turned off from website");
+    logEvent("LED: off via Guest Dashboard");
     request->send(SPIFFS, "/guestDashboard.html", "text/html", false, processor);
   });
 
 
   // Example of route which sets file to download - 'true' in send() command.
   server.on("/logOutput", HTTP_GET, [](AsyncWebServerRequest * request) {
-    if (!request->authenticate(guest_http_username, guest_http_password))
+    if (!request->authenticate(admin_http_username, admin_http_password))
       return request->requestAuthentication();
-    logEvent("Log Event Downloaded");
+    logEvent("Log Event Downloaded via Admin Dashboard");
     request->send(SPIFFS, "/logEvents.csv", "text/html", true);
   });
 
@@ -85,7 +85,7 @@ void routesConfiguration() {
     if (!request->authenticate(guest_http_username, guest_http_password))
       return request->requestAuthentication();
     safeLocked = true;
-    logEvent("Safe Locked via Website");
+    logEvent("Safe Locked via Guest Dashboard");
     request->send(SPIFFS, "/guestDashboard.html", "text/html", false, processor);
   });
 
@@ -93,7 +93,7 @@ void routesConfiguration() {
     if (!request->authenticate(guest_http_username, guest_http_password))
       return request->requestAuthentication();
     safeLocked = false;
-    logEvent("Safe Unlocked via Website");
+    logEvent("Safe Unlocked via Guest Dashboard");
     request->send(SPIFFS, "/guestDashboard.html", "text/html", false, processor);
   });
 
@@ -101,7 +101,7 @@ void routesConfiguration() {
     if (!request->authenticate(guest_http_username, guest_http_password))
       return request->requestAuthentication();
     fanEnabled = true;
-    logEvent("Fan Manual Control: On");
+    logEvent("Fan Manual Control: On via Guest Dashboard");
     request->send(SPIFFS, "/guestDashboard.html", "text/html", false, processor);
   });
 
@@ -109,7 +109,7 @@ void routesConfiguration() {
     if (!request->authenticate(guest_http_username, guest_http_password))
       return request->requestAuthentication();
     fanEnabled = false;
-    logEvent("Fan Manual Control: Off");
+    logEvent("Fan Manual Control: Off via Guest Dashboard");
     request->send(SPIFFS, "/guestDashboard.html", "text/html", false, processor);
   });
 
@@ -117,7 +117,7 @@ void routesConfiguration() {
     if (!request->authenticate(guest_http_username, guest_http_password))
       return request->requestAuthentication();
     autoFanEnabled = !autoFanEnabled;
-    logEvent("Fan Manual Control: On");
+    logEvent("Fan Manual Control: On via Guest Dashboard");
     request->send(SPIFFS, "/guestDashboard.html", "text/html", false, processor);
   });
 }
@@ -151,7 +151,7 @@ String processor(const String & var) {
   // Reading current temperature from sensor to display onto website
 
   if (var == "FANCONTROL") {
-    if (automaticFan) {
+    if (autoFanEnabled) {
       return "Automatic";
     } else {
       return "Manual";
@@ -160,7 +160,7 @@ String processor(const String & var) {
 
   if (var == "INVFANCONTROL") {
     if (autoFanEnabled) {
-      return "Manual";
+      return " ";
     } else {
       return "Automatic";
     }

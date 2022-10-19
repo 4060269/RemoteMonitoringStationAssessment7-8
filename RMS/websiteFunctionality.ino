@@ -32,7 +32,7 @@ void routesConfiguration() {
   // Example of a route with additional authentication (popup in browser)
   // And uses the processor function.
   server.on("/dashboard.html", HTTP_GET, [](AsyncWebServerRequest * request) {
-    if (!request->authenticate(guest_http_username, guest_http_password))
+    if (!request->authenticate(guest_http_username, guest_http_password) || !request->authenticate(admin_http_username, admin_http_password))
       return request->requestAuthentication();
     logEvent("Dashboard");
     request->send(SPIFFS, "/dashboard.html", "text/html", false, processor);

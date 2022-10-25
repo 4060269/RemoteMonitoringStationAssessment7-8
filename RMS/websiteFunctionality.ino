@@ -52,8 +52,9 @@ void routesConfiguration() {
 
   server.on("/adminDashboard.html", HTTP_GET, [](AsyncWebServerRequest * request) {
     if (!request->authenticate(admin_http_username, admin_http_password))
+    logEvent("Admin Dashboard Access Attempt Failed");
       return request->requestAuthentication();
-    logEvent("Admin Dashboard accessed");
+    logEvent("Admin Dashboard Successfully Accessed");
     request->send(SPIFFS, "/adminDashboard.html", "text/html", false, processor);
     // The admin is now allowed to download files
     // Run processor to check and modify certain aspects of request

@@ -7,7 +7,7 @@
 }
 
 .grid-container > div {
-    background-color: #F9A26C;
+    background-color: #EFEEEE;
     text-align: center;
     padding: 20px 0;
     font-size: 20px;
@@ -28,8 +28,8 @@ body {
 }
 
 h1 {
-    background-color: #9BD7D1;
-    color: white;
+    background-color: #F9A26C;
+    color: whitesmoke;
     text-align: center;
 }
 
@@ -40,7 +40,7 @@ ul {
     margin: 0;
     padding: 0;
     overflow: hidden;
-    background-color: #325D79;
+    background-color: #F26627;
 }
 
 li {
@@ -49,7 +49,7 @@ li {
 
 li a {
     display: block;
-    color: white;
+    color: whitesmoke;
     text-align: center;
     padding: 14px 16px;
     text-decoration: none;

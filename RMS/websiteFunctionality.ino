@@ -1,7 +1,15 @@
 void routesConfiguration() {
 
   server.onNotFound([](AsyncWebServerRequest * request) {
-    request->send(SPIFFS, "/404.html");
+    if (request->url().endsWith(F(".jpg"))) {
+      // Extract the filename that was attempted
+      int fnsstart = request->url().lastIndexOf('/');
+      String fn = request->url().substring(fnsstart);
+      // Load the image from SPIFFS and send to the browser.
+      request->send(SPIFFS, fn, "image/jpeg", true);
+    } else {
+      request->send(SPIFFS, "/404.html");
+    }
   });
 
   // Duplicated serving of index.html route, so the IP can be entered directly to browser
@@ -42,7 +50,7 @@ void routesConfiguration() {
     // || !request->authenticate(admin_http_username, admin_http_password)
   });
 
-    server.on("/adminDashboard.html", HTTP_GET, [](AsyncWebServerRequest * request) {
+  server.on("/adminDashboard.html", HTTP_GET, [](AsyncWebServerRequest * request) {
     if (!request->authenticate(admin_http_username, admin_http_password))
       return request->requestAuthentication();
     logEvent("Admin Dashboard accessed");

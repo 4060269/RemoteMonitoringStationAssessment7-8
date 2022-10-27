@@ -36,6 +36,14 @@ body {
     color: whitesmoke;
 }
 
+/* For images in body, center and make reasonable size */
+body img {
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+    width: 75%;
+}
+
 /* Header below navbar */
 h1 {
     background-color: #F26627;

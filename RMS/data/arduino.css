@@ -41,6 +41,7 @@ h1 {
     background-color: #F26627;
     color: whitesmoke;
     text-align: center;
+    padding: 10px;
 }
 
 
@@ -64,6 +65,7 @@ li a {
     text-align: center;
     padding: 14px 16px;
     text-decoration: none;
+    
 }
 
 /* Change the link colour on hover */

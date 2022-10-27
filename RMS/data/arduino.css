@@ -1,7 +1,9 @@
+/* Universal properties */
 * {
     font-family: 'Urbanist', sans-serif;
 }
 
+/* The structure of the cells */
 .grid-container {
     display: grid;
     grid-template-columns: auto auto;
@@ -10,6 +12,7 @@
     padding: 10px;
 }
 
+/* Each cell in body in Dashboard */
 .grid-container > div {
     background-color: #121212;
     text-align: center;
@@ -17,10 +20,12 @@
     font-size: 20px;
 }
 
+/* Not used? */
 .tinyText {
     font-size: 10px;
 }
 
+/* Not used? */
 .banner {
     grid-column-start: 1;
     grid-column-end: 3;
@@ -31,8 +36,9 @@ body {
     color: whitesmoke;
 }
 
+/* Header below navbar */
 h1 {
-    background-color: #F9A26C;
+    background-color: #F26627;
     color: whitesmoke;
     text-align: center;
 }
@@ -51,6 +57,7 @@ li {
     float: left;
 }
 
+/* links in navbar */
 li a {
     display: block;
     color: whitesmoke;
@@ -59,11 +66,12 @@ li a {
     text-decoration: none;
 }
 
-/* Change the link color to #111 (black) on hover */
+/* Change the link colour on hover */
 li a:hover {
     background-color: #325D79;
 }
 
+/* colour of current page in navbar */
 .active {
     background-color: #F9A26C;
     text-decoration: underline;

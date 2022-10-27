@@ -1,65 +1,64 @@
 /* Universal properties */
 * {
-    font-family: 'Urbanist', sans-serif;
+  font-family: "Urbanist", sans-serif;
 }
 
 /* The structure of the cells */
 .grid-container {
-    display: grid;
-    grid-template-columns: auto auto;
-    grid-gap: 10px;
-    background-color: #F26627;
-    padding: 10px;
+  display: grid;
+  grid-template-columns: auto auto;
+  grid-gap: 10px;
+  background-color: #f26627;
+  padding: 10px;
 }
 
 /* Each cell in body in Dashboard */
 .grid-container > div {
-    background-color: #121212;
-    text-align: center;
-    padding: 20px 0;
-    font-size: 20px;
+  background-color: #121212;
+  text-align: center;
+  padding: 20px 0;
+  font-size: 20px;
 }
 
 /* Not used? */
 .tinyText {
-    font-size: 10px;
+  font-size: 10px;
 }
 
 /* Not used? */
 .banner {
-    grid-column-start: 1;
-    grid-column-end: 3;
+  grid-column-start: 1;
+  grid-column-end: 3;
 }
 
 body {
-    background-color: #121212;
-    color: whitesmoke;
+  background-color: #121212;
+  color: whitesmoke;
 }
 
 /* For images in body, center and make reasonable size */
 body img {
-    display: block;
-    margin-left: auto;
-    margin-right: auto;
-    width: 75%;
+  display: block;
+  margin-left: auto;
+  margin-right: auto;
+  width: 75%;
 }
 
 /* Header below navbar */
 h1 {
-    background-color: #F26627;
-    color: whitesmoke;
-    text-align: center;
-    font-size: 30px;
+  background-color: #f26627;
+  color: whitesmoke;
+  text-align: center;
+  font-size: 30px;
 }
-
 
 /* Navbar */
 ul {
-    list-style-type: none;
-    margin: 0;
-    padding: 0;
-    overflow: hidden;
-    background-color: #F26627;
+  list-style-type: none;
+  margin: 0;
+  padding: 0;
+  overflow: hidden;
+  background-color: #f26627;
 }
 
 /* li {
@@ -68,20 +67,20 @@ ul {
 
 /* links in navbar */
 li a {
-    display: block;
-    color: whitesmoke;
-    padding: 14px 16px;
-    text-decoration: none;
-    text-align: center;
+  display: block;
+  color: whitesmoke;
+  padding: 14px 16px;
+  text-decoration: none;
+  text-align: center;
 }
 
 /* Change the link colour on hover */
 li a:hover {
-    background-color: #325D79;
+  background-color: #325d79;
 }
 
 /* colour of current page in navbar */
 .active {
-    background-color: #F9A26C;
-    text-decoration: underline;
+  background-color: #f9a26c;
+  text-decoration: underline;
 }

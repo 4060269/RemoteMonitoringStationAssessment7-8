@@ -52,6 +52,13 @@ h1 {
   font-size: 30px;
 }
 
+/* Headers for each section */
+.h2 {
+  color: whitesmoke;
+  font-weight: bold;
+  font-size: 25px;
+}
+
 /* Navbar */
 ul {
   list-style-type: none;

@@ -1,3 +1,5 @@
+const char* PARAM_INPUT_1 = "tempThreshold";
+
 void routesConfiguration() {
 
   server.onNotFound([](AsyncWebServerRequest * request) {
@@ -52,8 +54,8 @@ void routesConfiguration() {
 
   server.on("/adminDashboard.html", HTTP_GET, [](AsyncWebServerRequest * request) {
     if (!request->authenticate(admin_http_username, admin_http_password))
-    logEvent("Admin Dashboard Access Attempt Failed");
-      return request->requestAuthentication();
+      logEvent("Admin Dashboard Access Attempt Failed");
+    return request->requestAuthentication();
     logEvent("Admin Dashboard Successfully Accessed");
     request->send(SPIFFS, "/adminDashboard.html", "text/html", false, processor);
     // The admin is now allowed to download files
@@ -106,7 +108,7 @@ void routesConfiguration() {
     request->send(SPIFFS, "/guestDashboard.html", "text/html", false, processor);
   });
 
-    server.on("/adminSafeLock",  HTTP_GET, [](AsyncWebServerRequest * request) {
+  server.on("/adminSafeLock",  HTTP_GET, [](AsyncWebServerRequest * request) {
     if (!request->authenticate(admin_http_username, admin_http_password))
       return request->requestAuthentication();
     safeLocked = true;
@@ -114,14 +116,13 @@ void routesConfiguration() {
     request->send(SPIFFS, "/adminDashboard.html", "text/html", false, processor);
   });
 
-    server.on("/adminSafeUnlock",  HTTP_GET, [](AsyncWebServerRequest * request) {
+  server.on("/adminSafeUnlock",  HTTP_GET, [](AsyncWebServerRequest * request) {
     if (!request->authenticate(admin_http_username, admin_http_password))
       return request->requestAuthentication();
     safeLocked = false;
     logEvent("Safe Unlocked via Administrator Dashboard");
     request->send(SPIFFS, "/adminDashboard.html", "text/html", false, processor);
   });
-
 
   server.on("/FanOn",  HTTP_GET, [](AsyncWebServerRequest * request) {
     if (!request->authenticate(guest_http_username, guest_http_password))
@@ -145,6 +146,16 @@ void routesConfiguration() {
     autoFanEnabled = !autoFanEnabled;
     logEvent("Fan Manual Control: On via Guest Dashboard");
     request->send(SPIFFS, "/guestDashboard.html", "text/html", false, processor);
+  });
+
+  server.on("/setTemperatureThreshold", HTTP_GET,  [](AsyncWebServerRequest * request) {
+    int newThreshold;
+    if (request->hasParam(PARAM_INPUT_1)) {
+      fanTemperatureThreshold = request->getParam(PARAM_INPUT_1)->value().toFloat();
+      String logMessage = "Administrator set Automatic Fan Theshold to" + String(fanTemperatureThreshold);
+      logEvent(logMessage);
+    }
+    request->send(SPIFFS, "/admin.html", "text/html", false, processor);
   });
 }
 
@@ -192,6 +203,10 @@ String processor(const String & var) {
     }
   }
   // Determining manual or automatic fan control when a user tries to change it through the website
+
+if (var == "CURRENTTHRESHOLD") {
+  return String(fanTemperatureThreshold);
+}
 
   return String();
   // Default "catch" which will return nothing in case the HTML has no variable to replace.

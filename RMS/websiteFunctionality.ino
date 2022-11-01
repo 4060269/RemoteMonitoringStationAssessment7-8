@@ -106,6 +106,23 @@ void routesConfiguration() {
     request->send(SPIFFS, "/guestDashboard.html", "text/html", false, processor);
   });
 
+    server.on("/adminSafeLock",  HTTP_GET, [](AsyncWebServerRequest * request) {
+    if (!request->authenticate(admin_http_username, admin_http_password))
+      return request->requestAuthentication();
+    safeLocked = true;
+    logEvent("Safe Locked via Administrator Dashboard");
+    request->send(SPIFFS, "/adminDashboard.html", "text/html", false, processor);
+  });
+
+    server.on("/adminSafeUnlock",  HTTP_GET, [](AsyncWebServerRequest * request) {
+    if (!request->authenticate(admin_http_username, admin_http_password))
+      return request->requestAuthentication();
+    safeLocked = false;
+    logEvent("Safe Unlocked via Administrator Dashboard");
+    request->send(SPIFFS, "/adminDashboard.html", "text/html", false, processor);
+  });
+
+
   server.on("/FanOn",  HTTP_GET, [](AsyncWebServerRequest * request) {
     if (!request->authenticate(guest_http_username, guest_http_password))
       return request->requestAuthentication();

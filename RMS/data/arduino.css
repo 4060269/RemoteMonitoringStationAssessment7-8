@@ -8,13 +8,13 @@
   display: grid;
   grid-template-columns: auto auto;
   grid-gap: 10px;
-  background-color: #f26627;
+  background-color: #140D4F;
   padding: 10px;
 }
 
 /* Each cell in body in Dashboard */
 .grid-container > div {
-  background-color: #121212;
+  background-color: #4EA699;
   text-align: center;
   padding: 20px 0;
   font-size: 20px;
@@ -32,7 +32,7 @@
 }
 
 body {
-  background-color: #121212;
+  background-color: #1C0B19;
   color: whitesmoke;
 }
 
@@ -46,7 +46,7 @@ body img {
 
 /* Header below navbar */
 h1 {
-  background-color: #f26627;
+  background-color: #140D4F;
   color: whitesmoke;
   text-align: center;
   font-size: 30px;
@@ -65,14 +65,14 @@ ul {
   margin: 0;
   padding: 0;
   overflow: hidden;
-  background-color: #f26627;
+  background-color: #4EA699;
 }
 
 /* li {
     float: left;
 } */
 
-/* links in navbar */
+/* Links in navbar */
 li a {
   display: block;
   color: whitesmoke;
@@ -86,8 +86,8 @@ li a:hover {
   background-color: #325d79;
 }
 
-/* colour of current page in navbar */
+/* Colour of current page in navbar */
 .active {
-  background-color: #f9a26c;
+  background-color: #140D4F;
   text-decoration: underline;
 }

@@ -204,9 +204,9 @@ String processor(const String & var) {
   }
   // Determining manual or automatic fan control when a user tries to change it through the website
 
-if (var == "CURRENTTHRESHOLD") {
-  return String(fanTemperatureThreshold);
-}
+  if (var == "CURRENTTHRESHOLD") {
+    return String(fanTemperatureThreshold);
+  }
 
   return String();
   // Default "catch" which will return nothing in case the HTML has no variable to replace.

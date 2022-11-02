@@ -12,9 +12,25 @@
   padding: 10px;
 }
 
+.grid-container-admin {
+  display: grid;
+  grid-template-columns: auto auto;
+  grid-gap: 10px;
+  background-color: #140D4F;
+  padding: 10px;
+}
+
 /* Each cell in body in Dashboard */
 .grid-container > div {
   background-color: #4EA699;
+  text-align: center;
+  padding: 20px 0;
+  font-size: 20px;
+}
+
+/* Each cell in body in Dashboard */
+.grid-container-admin > div {
+  background-color: #D95D39;
   text-align: center;
   padding: 20px 0;
   font-size: 20px;

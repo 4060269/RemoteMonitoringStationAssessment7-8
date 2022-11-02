@@ -42,8 +42,10 @@ void routesConfiguration() {
   // Example of a route with additional authentication (popup in browser)
   // And uses the processor function.
   server.on("/guestDashboard.html", HTTP_GET, [](AsyncWebServerRequest * request) {
-    if (!request->authenticate(guest_http_username, guest_http_password))
+    if (!request->authenticate(guest_http_username, guest_http_password)) {
+      logEvent("Admin Dashboard Access Attempt Failed");
       return request->requestAuthentication();
+    }
     logEvent("Guest Dashboard accessed");
     request->send(SPIFFS, "/guestDashboard.html", "text/html", false, processor);
     // The user is not allowed to download files to ensure secure practices
@@ -53,9 +55,10 @@ void routesConfiguration() {
   });
 
   server.on("/adminDashboard.html", HTTP_GET, [](AsyncWebServerRequest * request) {
-    if (!request->authenticate(admin_http_username, admin_http_password))
+    if (!request->authenticate(admin_http_username, admin_http_password)) {
       logEvent("Admin Dashboard Access Attempt Failed");
-    return request->requestAuthentication();
+      return request->requestAuthentication();
+    }
     logEvent("Admin Dashboard Successfully Accessed");
     request->send(SPIFFS, "/adminDashboard.html", "text/html", false, processor);
     // The admin is now allowed to download files
@@ -67,84 +70,105 @@ void routesConfiguration() {
   // Example of route with authentication, and use of processor
   // Also demonstrates how to have arduino functionality included (turn LED on)
   server.on("/LEDOn", HTTP_GET, [](AsyncWebServerRequest * request) {
-    if (!request->authenticate(guest_http_username, guest_http_password))
+    if (!request->authenticate(guest_http_username, guest_http_password)) {
+      logEvent("LED On: Failed via Guest Dashboard");
       return request->requestAuthentication();
+    }
     LEDOn = true;
-    logEvent("LED: on via Guest Dashboard");
+    logEvent("LED On: Success via Guest Dashboard");
     request->send(SPIFFS, "/guestDashboard.html", "text/html", false, processor);
   });
 
 
   server.on("/LEDOff", HTTP_GET, [](AsyncWebServerRequest * request) {
-    if (!request->authenticate(guest_http_username, guest_http_password))
+    if (!request->authenticate(guest_http_username, guest_http_password)) {
+      logEvent("LED Off: Failed via Guest Dashboard");
       return request->requestAuthentication();
+    }
+
     LEDOn = false;
-    logEvent("LED: off via Guest Dashboard");
+    logEvent("LED Off: Success via Guest Dashboard");
     request->send(SPIFFS, "/guestDashboard.html", "text/html", false, processor);
   });
 
 
   // Example of route which sets file to download - 'true' in send() command.
   server.on("/logOutput", HTTP_GET, [](AsyncWebServerRequest * request) {
-    if (!request->authenticate(admin_http_username, admin_http_password))
+    if (!request->authenticate(admin_http_username, admin_http_password)) {
+      logEvent("Log Event Downloaded: Failed via Admin Dashboard");
       return request->requestAuthentication();
-    logEvent("Log Event Downloaded via Admin Dashboard");
+    }
+    logEvent("Log Event Downloaded: Success via Admin Dashboard");
     request->send(SPIFFS, "/logEvents.csv", "text/html", true);
   });
 
   server.on("/SafeLock",  HTTP_GET, [](AsyncWebServerRequest * request) {
-    if (!request->authenticate(guest_http_username, guest_http_password))
+    if (!request->authenticate(guest_http_username, guest_http_password)) {
+      logEvent("Safe Locked: Failed via Guest Dashboard");
       return request->requestAuthentication();
+    }
     safeLocked = true;
-    logEvent("Safe Locked via Guest Dashboard");
+    logEvent("Safe Locked: Success via Guest Dashboard");
     request->send(SPIFFS, "/guestDashboard.html", "text/html", false, processor);
   });
 
   server.on("/SafeUnlock",  HTTP_GET, [](AsyncWebServerRequest * request) {
-    if (!request->authenticate(guest_http_username, guest_http_password))
+    if (!request->authenticate(guest_http_username, guest_http_password)) {
+      logEvent("Safe Unlocked: Failed via Guest Dashboard");
       return request->requestAuthentication();
+    }
     safeLocked = false;
-    logEvent("Safe Unlocked via Guest Dashboard");
+    logEvent("Safe Unlocked: Success via Guest Dashboard");
     request->send(SPIFFS, "/guestDashboard.html", "text/html", false, processor);
   });
 
   server.on("/adminSafeLock",  HTTP_GET, [](AsyncWebServerRequest * request) {
-    if (!request->authenticate(admin_http_username, admin_http_password))
+    if (!request->authenticate(admin_http_username, admin_http_password)) {
+      logEvent("Safe Locked: Failed via Administrator Dashboard");
       return request->requestAuthentication();
+    }
     safeLocked = true;
-    logEvent("Safe Locked via Administrator Dashboard");
+    logEvent("Safe Locked: Success via Administrator Dashboard");
     request->send(SPIFFS, "/adminDashboard.html", "text/html", false, processor);
   });
 
   server.on("/adminSafeUnlock",  HTTP_GET, [](AsyncWebServerRequest * request) {
-    if (!request->authenticate(admin_http_username, admin_http_password))
+    if (!request->authenticate(admin_http_username, admin_http_password)) {
+      logEvent("Safe Unlocked: Failed via Administrator Dashboard");
       return request->requestAuthentication();
+    }
     safeLocked = false;
-    logEvent("Safe Unlocked via Administrator Dashboard");
+    logEvent("Safe Unlocked: Success via Administrator Dashboard");
     request->send(SPIFFS, "/adminDashboard.html", "text/html", false, processor);
   });
 
   server.on("/FanOn",  HTTP_GET, [](AsyncWebServerRequest * request) {
-    if (!request->authenticate(guest_http_username, guest_http_password))
+    if (!request->authenticate(guest_http_username, guest_http_password)) {
+      logEvent("Fan Manual Control On: Failed via Guest Dashboard");
       return request->requestAuthentication();
+    }
     fanEnabled = true;
-    logEvent("Fan Manual Control: On via Guest Dashboard");
+    logEvent("Fan Manual Control On: Success via Guest Dashboard");
     request->send(SPIFFS, "/guestDashboard.html", "text/html", false, processor);
   });
 
   server.on("/FanOff",  HTTP_GET, [](AsyncWebServerRequest * request) {
-    if (!request->authenticate(guest_http_username, guest_http_password))
+    if (!request->authenticate(guest_http_username, guest_http_password)) {
+      logEvent("Fan Manual Control Off: Failed via Guest Dashboard");
       return request->requestAuthentication();
+    }
     fanEnabled = false;
-    logEvent("Fan Manual Control: Off via Guest Dashboard");
+    logEvent("Fan Manual Control Off: Success via Guest Dashboard");
     request->send(SPIFFS, "/guestDashboard.html", "text/html", false, processor);
   });
 
   server.on("/FanControl",  HTTP_GET, [](AsyncWebServerRequest * request) {
-    if (!request->authenticate(guest_http_username, guest_http_password))
+    if (!request->authenticate(guest_http_username, guest_http_password)) {
+      logEvent("Fan Manual Control On: Failed via Guest Dashboard");
       return request->requestAuthentication();
+    }
     autoFanEnabled = !autoFanEnabled;
-    logEvent("Fan Manual Control: On via Guest Dashboard");
+    logEvent("Fan Manual Control On: Success via Guest Dashboard");
     request->send(SPIFFS, "/guestDashboard.html", "text/html", false, processor);
   });
 
@@ -152,10 +176,10 @@ void routesConfiguration() {
     int newThreshold;
     if (request->hasParam(PARAM_INPUT_1)) {
       fanTemperatureThreshold = request->getParam(PARAM_INPUT_1)->value().toFloat();
-      String logMessage = "Administrator set Automatic Fan Theshold to" + String(fanTemperatureThreshold);
+      String logMessage = "Temperature Threshold: Success via Admin Dashboard" + String(fanTemperatureThreshold);
       logEvent(logMessage);
     }
-    request->send(SPIFFS, "/admin.html", "text/html", false, processor);
+    request->send(SPIFFS, "/adminDashboard.html", "text/html", false, processor);
   });
 }
 

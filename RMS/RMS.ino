@@ -86,6 +86,7 @@ Adafruit_ST7735 tft = Adafruit_ST7735(TFT_CS,  TFT_DC, TFT_RST);
 // Library to allow temperature sensor to be found and read from software
 Adafruit_ADT7410 tempsensor = Adafruit_ADT7410();
 // Create the ADT7410 temperature sensor object
+float fanTemperatureThreshold = 25.0;
 // Temperature END
 
 // RTC START
@@ -262,7 +263,7 @@ void loop() {
   printTemperature();
   // Then run the temperature print out to display
   if (autoFanEnabled) {
-    automaticFan(22.00);
+    automaticFan(fanTemperatureThreshold);
   }
   fanController();
   // After those functions, the order is irrelevant
@@ -339,12 +340,12 @@ void printTemperature() {
 // This function is a way to display temperature in real-time effectively and will be used to show guests their pod temp
 
 
-void automaticFan(float temperatureThreshold) {
+void automaticFan(float fanTemperatureThreshold) {
   // Get the value from loop to have more efficient and faster code
   float currentTemp = tempsensor.readTempC();
   myMotor->setSpeed(100);
   // Change class method with argument 100, to fully turn on fan
-  if (currentTemp > temperatureThreshold) {
+  if (currentTemp > fanTemperatureThreshold) {
     // Compare current with threshold
     fanEnabled = true;
     // Stop running because it is cool/cold

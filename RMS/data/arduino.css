@@ -1,65 +1,109 @@
+/* Universal properties */
+* {
+  font-family: "Urbanist", sans-serif;
+}
+
+/* The structure of the cells */
 .grid-container {
-    display: grid;
-    grid-template-columns: auto auto;
-    grid-gap: 10px;
-    background-color: #40b973;
-    padding: 10px;
+  display: grid;
+  grid-template-columns: auto auto;
+  grid-gap: 10px;
+  background-color: #140D4F;
+  padding: 10px;
 }
 
+.grid-container-admin {
+  display: grid;
+  grid-template-columns: auto auto;
+  grid-gap: 10px;
+  background-color: #140D4F;
+  padding: 10px;
+}
+
+/* Each cell in body in Dashboard */
 .grid-container > div {
-    background-color: rgba(255, 255, 255, 0.8);
-    text-align: center;
-    padding: 20px 0;
-    font-size: 20px;
+  background-color: #4EA699;
+  text-align: center;
+  padding: 20px 0;
+  font-size: 20px;
 }
 
+/* Each cell in body in Dashboard */
+.grid-container-admin > div {
+  background-color: #D95D39;
+  text-align: center;
+  padding: 20px 0;
+  font-size: 20px;
+}
+
+/* Not used? */
 .tinyText {
-    font-size: 10px;
+  font-size: 10px;
 }
 
+/* Not used? */
 .banner {
-    grid-column-start: 1;
-    grid-column-end: 3;
+  grid-column-start: 1;
+  grid-column-end: 3;
 }
 
 body {
-    background-color: lightcyan;
-    /*color: blue;*/
+  background-color: #1C0B19;
+  color: whitesmoke;
 }
 
+/* For images in body, center and make reasonable size */
+body img {
+  display: block;
+  margin-left: auto;
+  margin-right: auto;
+  width: 75%;
+}
+
+/* Header below navbar */
 h1 {
-    background-color: green;
-    color: white;
-    text-align: center;
+  background-color: #140D4F;
+  color: whitesmoke;
+  text-align: center;
+  font-size: 30px;
 }
 
+/* Headers for each section */
+.h2 {
+  color: whitesmoke;
+  font-weight: bold;
+  font-size: 25px;
+}
 
 /* Navbar */
 ul {
-    list-style-type: none;
-    margin: 0;
-    padding: 0;
-    overflow: hidden;
-    background-color: #333;
+  list-style-type: none;
+  margin: 0;
+  padding: 0;
+  overflow: hidden;
+  background-color: #4EA699;
 }
 
-li {
+/* li {
     float: left;
-}
+} */
 
+/* Links in navbar */
 li a {
-    display: block;
-    color: white;
-    text-align: center;
-    padding: 14px 16px;
-    text-decoration: none;
+  display: block;
+  color: whitesmoke;
+  padding: 14px 16px;
+  text-decoration: none;
+  text-align: center;
 }
 
-/* Change the link color to #111 (black) on hover */
+/* Change the link colour on hover */
 li a:hover {
-    background-color: #111;
+  background-color: #325d79;
 }
 
+/* Colour of current page in navbar */
 .active {
-    background-color: #04AA6D;
+  background-color: #140D4F;
+  text-decoration: underline;
 }

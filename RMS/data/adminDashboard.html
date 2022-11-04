@@ -2,25 +2,42 @@
 <html>
 <head>
     <meta charset="UTF-8">
-    <title>Login</title>
+    <title>RMS | Administrator Dashboard</title>
     <link rel="stylesheet" href="arduino.css">
 </head>
 
 <body>
-<nav>
-    <ul>
-        <li><a href="/index.html">Home</a></li>
-        <li><a href="/guestDashboard.html">Guest Dashboard</a></li>
-        <li class="active"><a href="/adminDashboard.html">Administrator Dashboard</a></li>
-    </ul>
-</nav>
+    <nav>
+        <div class="grid-container">
+            <h1 style="position:relative;top:20px" class="div">Administrator Dashboard</h1>
+            <ul class="div">
+                <li><a href="/index.html">Home</a></li>
+                <li><a href="/guestDashboard.html">Guest Dashboard</a></li>
+                <li class="active" style="background-color:#D95D39"><a href="/adminDashboard.html">Administrator Dashboard</a></li>
+            </ul>
+        </div>
+    </nav>
 
-<h1>Administrator Dashboard</h1>
+<div class="grid-container-admin">
+    <div>
+        <p class="h2">LogEvents</p>
+        <p><a href="/logOutput">Download</a></p>
+    </div>
 
-<div class="grid-container">
-<div>
-    <div><p>LogEvents</p>
-    <p><a href="/logOutput">Download</a></p>
+    <div>
+        <p class="h2">%SAFESTATUS%</p>
+        <p><a href="/SafeLockAdmin">Lock Safe</a></p>
+        <p><a href="/SafeUnlockAdmin">Unlock Safe</a></p>
+    </div>
+
+    <div>
+        <p class="h2">Set Temperature Threshold</p>
+        <form action="/setTemperatureThreshold">
+            Temperature Threshold 
+            <br>
+            <input type="number" name="tempThreshold" value="%CURRENTTHRESHOLD%">
+            <input type="submit" value="Submit">
+        </form><br>
     </div>
 </div>
 </body>

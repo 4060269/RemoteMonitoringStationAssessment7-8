@@ -172,7 +172,7 @@ void routesConfiguration() {
     request->send(SPIFFS, "/guestDashboard.html", "text/html", false, processor);
   });
 
-  server.on("/setTemperatureThreshold", HTTP_GET,  [](AsyncWebServerRequest * request) {
+  server.on("/adminSetTemperatureThreshold", HTTP_GET,  [](AsyncWebServerRequest * request) {
     int newThreshold;
     if (request->hasParam(PARAM_INPUT_1)) {
       fanTemperatureThreshold = request->getParam(PARAM_INPUT_1)->value().toFloat();
